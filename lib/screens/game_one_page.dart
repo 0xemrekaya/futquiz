@@ -55,36 +55,70 @@ class _GameOnePageState extends State<GameOnePage> {
     final textStyle = Theme.of(context).textTheme;
     return Scaffold(
       appBar: _appBar(context),
-      body: Padding(
-        padding: EdgeInsets.symmetric(vertical: height / 10, horizontal: width / 10),
-        child: Column(
-          children: [
-            Observer(builder: (_) {
-              return player.isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : Column(
+      body: Align(
+        alignment: Alignment.center,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: height / 20,
+            horizontal: width / 10,
+          ),
+          child: SizedBox(
+            child: Column(
+              children: [
+                Column(
+                  children: [
+                    // Text(getRandomProperties(
+                    //         player.playerMapModel!.age.toString(),
+                    //         player.playerMapModel!.height.toString(),
+                    //         player.playerMapModel!.nationality.toString(),
+                    //         player.playerMapModel!.positions.toString(),
+                    //         player.playerMapModel!.preferredFoot.toString())
+                    //     .toString()),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Text(getRandomProperties(
-                                player.playerMapModel!.age.toString(),
-                                player.playerMapModel!.height.toString(),
-                                player.playerMapModel!.nationality.toString(),
-                                player.playerMapModel!.positions.toString(),
-                                player.playerMapModel!.preferredFoot.toString())
-                            .toString()),
-                        Text(player.playerMapModel?.name ?? "null"),
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(child: Observer(builder: (_) {
+                            return Text(player.playerMapModel?.age.toString() ?? "null");
+                          })),
+                        ),
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(child: Observer(builder: (_) {
+                            return Text(player.playerMapModel?.bestPosition ?? "null");
+                          })),
+                        )
                       ],
-                    );
-            }),
-            SizedBox(height: 100,),
-            ElevatedButton(
-                onPressed: () {
-                  number = getRandomNumber();
-                  getPlayer(number);
-                },
-                child: Text("Skip")),
-          ],
+                    ),
+
+                    Observer(builder: (_) {
+                      return Text(player.playerMapModel?.name ?? "null");
+                    }),
+                  ],
+                ),
+                const SizedBox(
+                  height: 100,
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      number = getRandomNumber();
+                      getPlayer(number);
+                    },
+                    child: const Text("Skip")),
+              ],
+            ),
+          ),
         ),
       ),
     );
