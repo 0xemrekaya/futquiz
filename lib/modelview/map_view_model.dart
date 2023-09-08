@@ -12,14 +12,24 @@ abstract class _PlayerMapViewModelBase with Store {
   @observable
   PlayerMapModel? playerMapModel;
 
+  @observable
+  bool isLoading = false;
+
+  @action
+  void _changeLoading(){
+    isLoading = !isLoading;
+  }
+
   @action
   Future<void> fetchPlayer(int id) async {
-    final playersCollectionReference = await FirebaseFirestore.instance.collection("players").doc(id.toString());
-    final response = await playersCollectionReference.withConverter(
+    _changeLoading();
+    final playersCollectionReference = FirebaseFirestore.instance.collection("players").doc(id.toString());
+    final response = playersCollectionReference.withConverter(
       fromFirestore: PlayerMapModel.fromFirestore,
       toFirestore: (player, _) => {},
     );
     final players = await response.get();
+    _changeLoading();
     final data = players.data(); // Convert to City object
     if (data != null) {
       playerMapModel = data;

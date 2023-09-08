@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../modelview/map_view_model.dart';
 
@@ -13,10 +14,8 @@ class GameOnePage extends StatefulWidget {
 }
 
 class _GameOnePageState extends State<GameOnePage> {
-
-  
   PlayerMapViewModel player = PlayerMapViewModel();
-  int? number;
+  late int number;
 
   Future<void> getPlayer(int num) async {
     await player.fetchPlayer(num);
@@ -29,7 +28,8 @@ class _GameOnePageState extends State<GameOnePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    number = getRandomNumber();
+    getPlayer(number);
     super.initState();
   }
 
@@ -48,11 +48,17 @@ class _GameOnePageState extends State<GameOnePage> {
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: height / 10, horizontal: width / 10),
-        child: const Column(
+        child: Column(
           children: [
-            Center(
-              child: Text("Game One Page"),
-            ),
+            Observer(builder: (_) {
+              return player.isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Center(
+                      child: Text(player.playerMapModel!.fullName.toString()),
+                    );
+            }),
           ],
         ),
       ),

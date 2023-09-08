@@ -25,6 +25,22 @@ mixin _$PlayerMapViewModel on _PlayerMapViewModelBase, Store {
     });
   }
 
+  late final _$isLoadingAtom =
+      Atom(name: '_PlayerMapViewModelBase.isLoading', context: context);
+
+  @override
+  bool get isLoading {
+    _$isLoadingAtom.reportRead();
+    return super.isLoading;
+  }
+
+  @override
+  set isLoading(bool value) {
+    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
+      super.isLoading = value;
+    });
+  }
+
   late final _$fetchPlayerAsyncAction =
       AsyncAction('_PlayerMapViewModelBase.fetchPlayer', context: context);
 
@@ -33,10 +49,25 @@ mixin _$PlayerMapViewModel on _PlayerMapViewModelBase, Store {
     return _$fetchPlayerAsyncAction.run(() => super.fetchPlayer(id));
   }
 
+  late final _$_PlayerMapViewModelBaseActionController =
+      ActionController(name: '_PlayerMapViewModelBase', context: context);
+
+  @override
+  void _changeLoading() {
+    final _$actionInfo = _$_PlayerMapViewModelBaseActionController.startAction(
+        name: '_PlayerMapViewModelBase._changeLoading');
+    try {
+      return super._changeLoading();
+    } finally {
+      _$_PlayerMapViewModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
-playerMapModel: ${playerMapModel}
+playerMapModel: ${playerMapModel},
+isLoading: ${isLoading}
     ''';
   }
 }
