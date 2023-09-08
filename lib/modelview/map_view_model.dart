@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobx/mobx.dart';
@@ -14,8 +13,8 @@ abstract class _PlayerMapViewModelBase with Store {
   PlayerMapModel? playerMapModel;
 
   @action
-  Future<void> fetchPlayer(String id) async {
-    final playersCollectionReference = await FirebaseFirestore.instance.collection("players").doc(id);
+  Future<void> fetchPlayer(int id) async {
+    final playersCollectionReference = await FirebaseFirestore.instance.collection("players").doc(id.toString());
     final response = await playersCollectionReference.withConverter(
       fromFirestore: PlayerMapModel.fromFirestore,
       toFirestore: (player, _) => {},
@@ -23,10 +22,12 @@ abstract class _PlayerMapViewModelBase with Store {
     final players = await response.get();
     final data = players.data(); // Convert to City object
     if (data != null) {
-      inspect(data);
       playerMapModel = data;
     } else {
       print("Data is null");
     }
   }
+
+
+
 }

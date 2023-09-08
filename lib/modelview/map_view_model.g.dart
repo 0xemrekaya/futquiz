@@ -29,7 +29,7 @@ mixin _$PlayerMapViewModel on _PlayerMapViewModelBase, Store {
       AsyncAction('_PlayerMapViewModelBase.fetchPlayer', context: context);
 
   @override
-  Future<void> fetchPlayer(String id) {
+  Future<void> fetchPlayer(int id) {
     return _$fetchPlayerAsyncAction.run(() => super.fetchPlayer(id));
   }
 
