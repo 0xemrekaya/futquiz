@@ -2,6 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'firebase_options.dart';
+import 'screens/game_one_page.dart';
+import 'screens/home_page.dart';
 import 'screens/home_screen.dart';
 
 Future<void> main() async {
@@ -18,12 +20,17 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData.dark(useMaterial3: true).copyWith(
-          colorScheme: ColorScheme.dark().copyWith(
-            primary: Color.fromARGB(255, 5, 85, 150),
-            secondary: Color.fromARGB(255, 7, 7, 103),
+          colorScheme: const ColorScheme.dark().copyWith(
+            primary: Color.fromARGB(255, 73, 160, 222),
+            secondary: Color.fromARGB(255, 14, 34, 134),
           ),
         ),
-        home: HomeScreen());
+        routes: {
+          HomePage.id: (context) => const HomePage(),
+          GameOnePage.id: (context) => const GameOnePage(),
+        },
+        home: const HomePage());
   }
 }
