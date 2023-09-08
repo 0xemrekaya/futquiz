@@ -37,6 +37,7 @@ abstract class _PlayerMapViewModelBase with Store {
       print("Data is null");
     }
   }
+  
 
 
 

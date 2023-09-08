@@ -23,8 +23,8 @@ class MainApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark(useMaterial3: true).copyWith(
           colorScheme: const ColorScheme.dark().copyWith(
-            primary: Color.fromARGB(255, 73, 160, 222),
-            secondary: Color.fromARGB(255, 14, 34, 134),
+            primary: Color.fromARGB(218, 154, 226, 177),
+            secondary: const Color(0xAA1737EB),
           ),
         ),
         routes: {

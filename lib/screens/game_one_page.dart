@@ -17,6 +17,13 @@ class _GameOnePageState extends State<GameOnePage> {
   PlayerMapViewModel player = PlayerMapViewModel();
   late int number;
 
+  @override
+  void initState() {
+    number = getRandomNumber();
+    getPlayer(number);
+    super.initState();
+  }
+
   Future<void> getPlayer(int num) async {
     await player.fetchPlayer(num);
   }
@@ -26,11 +33,19 @@ class _GameOnePageState extends State<GameOnePage> {
     return random.nextInt(289) + 1;
   }
 
-  @override
-  void initState() {
-    number = getRandomNumber();
-    getPlayer(number);
-    super.initState();
+  List<String> getRandomProperties(
+      String age, String height, String nationality, String positions, String preferredFoot) {
+    List properties = [age, height, nationality, positions, preferredFoot];
+    final random = Random();
+    final selectedProperties = <String>[];
+    while (selectedProperties.length < 2) {
+      final index = random.nextInt(properties.length);
+      final property = properties[index];
+      if (property != null && !selectedProperties.contains(property)) {
+        selectedProperties.add(property);
+      }
+    }
+    return selectedProperties;
   }
 
   @override
@@ -39,13 +54,7 @@ class _GameOnePageState extends State<GameOnePage> {
     final width = MediaQuery.of(context).size.width;
     final textStyle = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: AppBar(
-        title: const Align(
-            alignment: Alignment.center,
-            child: Text(
-              "Ben Kimim?",
-            )),
-      ),
+      appBar: _appBar(context),
       body: Padding(
         padding: EdgeInsets.symmetric(vertical: height / 10, horizontal: width / 10),
         child: Column(
@@ -55,13 +64,47 @@ class _GameOnePageState extends State<GameOnePage> {
                   ? const Center(
                       child: CircularProgressIndicator(),
                     )
-                  : Center(
-                      child: Text(player.playerMapModel!.fullName.toString()),
+                  : Column(
+                      children: [
+                        Text(getRandomProperties(
+                                player.playerMapModel!.age.toString(),
+                                player.playerMapModel!.height.toString(),
+                                player.playerMapModel!.nationality.toString(),
+                                player.playerMapModel!.positions.toString(),
+                                player.playerMapModel!.preferredFoot.toString())
+                            .toString()),
+                        Text(player.playerMapModel?.name ?? "null"),
+                      ],
                     );
             }),
+            SizedBox(height: 100,),
+            ElevatedButton(
+                onPressed: () {
+                  number = getRandomNumber();
+                  getPlayer(number);
+                },
+                child: Text("Skip")),
           ],
         ),
       ),
+    );
+  }
+
+  AppBar _appBar(BuildContext context) {
+    return AppBar(
+      title: const Align(
+          alignment: Alignment.center,
+          child: Text(
+            "Ben Kimim?",
+          )),
+      actions: [
+        IconButton(
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, "home_page");
+          },
+          icon: const Icon(Icons.exit_to_app_rounded),
+        ),
+      ],
     );
   }
 }
