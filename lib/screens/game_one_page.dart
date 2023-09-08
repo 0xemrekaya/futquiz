@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
@@ -16,12 +17,20 @@ class GameOnePage extends StatefulWidget {
 class _GameOnePageState extends State<GameOnePage> {
   PlayerMapViewModel player = PlayerMapViewModel();
   late int number;
+  final _searchController = TextEditingController();
 
   @override
   void initState() {
     number = getRandomNumber();
     getPlayer(number);
+    _searchController.addListener(_onSearchChanged);
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    searchPlayer();
+    super.didChangeDependencies();
   }
 
   Future<void> getPlayer(int num) async {
@@ -33,19 +42,59 @@ class _GameOnePageState extends State<GameOnePage> {
     return random.nextInt(289) + 1;
   }
 
-  List<String> getRandomProperties(
-      String age, String height, String nationality, String positions, String preferredFoot) {
-    List properties = [age, height, nationality, positions, preferredFoot];
-    final random = Random();
-    final selectedProperties = <String>[];
-    while (selectedProperties.length < 2) {
-      final index = random.nextInt(properties.length);
-      final property = properties[index];
-      if (property != null && !selectedProperties.contains(property)) {
-        selectedProperties.add(property);
+  List _allResults = [];
+  List _resultList = [];
+
+  Future<void> searchPlayer() async {
+    var data = await FirebaseFirestore.instance.collection("players").orderBy("Name").get();
+    setState(() {
+      _allResults = data.docs;
+    });
+    searchResultList();
+  }
+
+  void _onSearchChanged() {
+    searchResultList();
+  }
+
+  void searchResultList() {
+    var showResults = [];
+    if (_searchController.text != "") {
+      for (var players in _allResults) {
+        var name = players["Name"].toString().toLowerCase();
+        if (name.contains(_searchController.text.toLowerCase())) {
+          showResults.add(players);
+        }
       }
+    } else {
+      showResults = List.from(_allResults);
     }
-    return selectedProperties;
+    setState(() {
+      _resultList = showResults;
+    });
+  }
+
+  // This is not using at now because it doesnt work with ui design at now.
+  // List<String> getRandomProperties(
+  //     String age, String height, String nationality, String positions, String preferredFoot) {
+  //   List properties = [age, height, nationality, positions, preferredFoot];
+  //   final random = Random();
+  //   final selectedProperties = <String>[];
+  //   while (selectedProperties.length < 2) {
+  //     final index = random.nextInt(properties.length);
+  //     final property = properties[index];
+  //     if (property != null && !selectedProperties.contains(property)) {
+  //       selectedProperties.add(property);
+  //     }
+  //   }
+  //   return selectedProperties;
+  // }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -123,6 +172,7 @@ class _GameOnePageState extends State<GameOnePage> {
                       width: 200,
                       height: 50,
                       child: TextField(
+                        controller: _searchController,
                         decoration: InputDecoration(
                           hintText: "Tahmin et",
                           border: OutlineInputBorder(
@@ -130,6 +180,19 @@ class _GameOnePageState extends State<GameOnePage> {
                           ),
                         ),
                       ),
+                    ),
+                  ),
+                  Container(
+                    color: Colors.blueAccent,
+                    height: 100,
+                    child: ListView.builder(
+                      itemCount: _resultList.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(_resultList[index]["Name"]),
+                          subtitle: Text(_resultList[index]["Age"].toString()),
+                        );
+                      },
                     ),
                   ),
                   Observer(builder: (_) {
