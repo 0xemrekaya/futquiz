@@ -3,24 +3,24 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'player_model.g.dart';
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable(createToJson: false,fieldRename: FieldRename.pascal)
 class PlayerMapModel {
-  String? iD;
+  int? iD;
   String? name;
   String? fullName;
-  String? age;
-  String? height;
-  String? weight;
+  int? age;
+  int? height;
+  int? weight;
   String? photoUrl;
   String? nationality;
-  String? overall;
+  int? overall;
   String? positions;
   String? bestPosition;
   String? club;
-  String? valueEUR;
+  int? valueEUR;
   String? nationalTeam;
   String? preferredFoot;
-  String? skillMoves;
+  int? skillMoves;
 
   PlayerMapModel(
       {this.iD,
