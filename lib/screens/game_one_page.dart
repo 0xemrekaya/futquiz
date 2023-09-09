@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_autocomplete/easy_autocomplete.dart';
+import 'package:flexible_scrollbar/flexible_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
@@ -18,12 +20,12 @@ class _GameOnePageState extends State<GameOnePage> {
   PlayerMapViewModel player = PlayerMapViewModel();
   late int number;
   final _searchController = TextEditingController();
+  final _scrollController = ScrollController();
 
   @override
   void initState() {
     number = getRandomNumber();
     getPlayer(number);
-    _searchController.addListener(_onSearchChanged);
     super.initState();
   }
 
@@ -43,34 +45,11 @@ class _GameOnePageState extends State<GameOnePage> {
   }
 
   List _allResults = [];
-  List _resultList = [];
 
   Future<void> searchPlayer() async {
     var data = await FirebaseFirestore.instance.collection("players").orderBy("Name").get();
     setState(() {
       _allResults = data.docs;
-    });
-    searchResultList();
-  }
-
-  void _onSearchChanged() {
-    searchResultList();
-  }
-
-  void searchResultList() {
-    var showResults = [];
-    if (_searchController.text != "") {
-      for (var players in _allResults) {
-        var name = players["Name"].toString().toLowerCase();
-        if (name.contains(_searchController.text.toLowerCase())) {
-          showResults.add(players);
-        }
-      }
-    } else {
-      showResults = List.from(_allResults);
-    }
-    setState(() {
-      _resultList = showResults;
     });
   }
 
@@ -90,10 +69,12 @@ class _GameOnePageState extends State<GameOnePage> {
   //   return selectedProperties;
   // }
 
+  // bool _isContainerVisible = false;
+
   @override
   void dispose() {
-    _searchController.removeListener(_onSearchChanged);
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -169,35 +150,33 @@ class _GameOnePageState extends State<GameOnePage> {
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: height / 20, horizontal: width / 15),
                     child: SizedBox(
-                      width: 200,
                       height: 50,
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: InputDecoration(
-                          hintText: "Tahmin et",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
+                      width: 250,
+                      child: EasyAutocomplete(
+                          controller: _searchController,
+                          suggestions: _allResults.map((e) => e["Name"].toString()).toList(),
+                          onChanged: (value) => print(value),
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: const BorderSide(style: BorderStyle.solid)),
                           ),
-                        ),
-                      ),
+                          suggestionBuilder: (data) {
+                            return Container(
+                                margin: const EdgeInsets.all(1),
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                    color: const Color.fromARGB(218, 154, 226, 177),
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: Row(
+                                  children: [
+                                    Text(data, style: const TextStyle(color: Colors.white)),
+                                  ],
+                                ));
+                          }),
                     ),
                   ),
-                  Container(
-                    color: Colors.blueAccent,
-                    height: 100,
-                    child: ListView.builder(
-                      itemCount: _resultList.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(_resultList[index]["Name"]),
-                          subtitle: Text(_resultList[index]["Age"].toString()),
-                        );
-                      },
-                    ),
-                  ),
-                  Observer(builder: (_) {
-                    return Text(player.playerMapModel?.name ?? "null");
-                  }),
                 ],
               ),
               const SizedBox(
@@ -209,6 +188,9 @@ class _GameOnePageState extends State<GameOnePage> {
                     getPlayer(number);
                   },
                   child: const Text("Skip")),
+              Observer(builder: (_) {
+                return Text(player.playerMapModel?.name ?? "null");
+              }),
             ],
           ),
         ),

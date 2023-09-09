@@ -17,6 +17,7 @@ dependencies:
   mobx_codegen: ^2.3.0
   cloud_firestore: ^4.9.1
   firebase_core: ^2.15.1
+  easy_autocomplete: ^1.6.0
 
 dev_dependencies:
   flutter_test:
