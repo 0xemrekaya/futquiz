@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_autocomplete/easy_autocomplete.dart';
-import 'package:flexible_scrollbar/flexible_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
@@ -20,7 +19,9 @@ class _GameOnePageState extends State<GameOnePage> {
   PlayerMapViewModel player = PlayerMapViewModel();
   late int number;
   final _searchController = TextEditingController();
-  final _scrollController = ScrollController();
+  List _selectedPlayers = [];
+  List _unselectedPlayers = [];
+  bool _isSelectedPlayer = false;
 
   @override
   void initState() {
@@ -45,12 +46,23 @@ class _GameOnePageState extends State<GameOnePage> {
   }
 
   List _allResults = [];
-
   Future<void> searchPlayer() async {
     var data = await FirebaseFirestore.instance.collection("players").orderBy("Name").get();
     setState(() {
       _allResults = data.docs;
     });
+  }
+
+  void showSelectedPlayers() {
+    _searchController.clear();
+    _unselectedPlayers = _allResults;
+    setState(() {
+      _isSelectedPlayer = true;
+      _unselectedPlayers.remove(_selectedPlayers.last);
+    });
+
+    print(_selectedPlayers);
+    print(_allResults);
   }
 
   // This is not using at now because it doesnt work with ui design at now.
@@ -74,7 +86,6 @@ class _GameOnePageState extends State<GameOnePage> {
   @override
   void dispose() {
     _searchController.dispose();
-    _scrollController.dispose();
     super.dispose();
   }
 
@@ -85,13 +96,13 @@ class _GameOnePageState extends State<GameOnePage> {
     final textStyle = Theme.of(context).textTheme;
     return Scaffold(
       appBar: _appBar(context),
-      body: Align(
-        alignment: Alignment.center,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: height / 20,
-            horizontal: width / 10,
-          ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: height / 30,
+          horizontal: width / 10,
+        ),
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Column(
             children: [
               Text(
@@ -154,8 +165,16 @@ class _GameOnePageState extends State<GameOnePage> {
                       width: 250,
                       child: EasyAutocomplete(
                           controller: _searchController,
-                          suggestions: _allResults.map((e) => e["Name"].toString()).toList(),
-                          onChanged: (value) => print(value),
+                          suggestions: _isSelectedPlayer
+                              ? _unselectedPlayers
+                                  .map((e) => e["Name"].toString() + " - " + e["Club"].toString())
+                                  .toList()
+                              : _allResults.map((e) => e["Name"].toString() + " - " + e["Club"].toString()).toList(),
+                          onSubmitted: (p0) {
+                            _selectedPlayers.add(p0);
+                            showSelectedPlayers();
+                            setState(() {});
+                          },
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                             border: OutlineInputBorder(
@@ -164,23 +183,20 @@ class _GameOnePageState extends State<GameOnePage> {
                           ),
                           suggestionBuilder: (data) {
                             return Container(
+                                width: 250,
                                 margin: const EdgeInsets.all(1),
-                                padding: const EdgeInsets.all(8),
+                                padding: const EdgeInsets.all(7),
                                 decoration: BoxDecoration(
                                     color: const Color.fromARGB(218, 154, 226, 177),
                                     borderRadius: BorderRadius.circular(5)),
-                                child: Row(
-                                  children: [
-                                    Text(data, style: const TextStyle(color: Colors.white)),
-                                  ],
-                                ));
+                                child: Text(data, style: const TextStyle(color: Colors.white)));
                           }),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 100,
+              SizedBox(
+                height: height / 5,
               ),
               ElevatedButton(
                   onPressed: () {
