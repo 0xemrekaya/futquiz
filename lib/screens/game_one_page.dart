@@ -40,11 +40,12 @@ class _GameOnePageState extends State<GameOnePage> {
 
   List _allResults = [];
   Future<void> searchPlayer() async {
-    var data = await FirebaseFirestore.instance.collection("players").orderBy("Name").get();
+    var data = await FirebaseFirestore.instance.collection("new").orderBy("Name").get();
     setState(() {
       _allResults = data.docs;
     });
   }
+
 
   Future<List<String>> _fetchSuggestions(String searchValue) async {
     List<String> suggestions =
@@ -205,13 +206,9 @@ class _GameOnePageState extends State<GameOnePage> {
                                     color: const Color.fromARGB(218, 154, 226, 177),
                                     borderRadius: BorderRadius.circular(5)),
                                 child: ListTile(
-                                  title:
-                                      Text("${_selectedPlayers[index]["Name"]} - ${_selectedPlayers[index]["Club"]}"),
-                                      trailing: SizedBox(
-                                        width: 10,
-                                        height: 10,
-                                        child: Image.network(_selectedPlayers[index]["Nationality"])),
-                                ),
+                                    title: Text(
+                                        "${_selectedPlayers[index]["Name"]} - ${_selectedPlayers[index]["Positions"]}"),
+                                    leading: Image.network(_selectedPlayers[index]["Nationality"] ?? "")),
                               );
                             },
                           ))
