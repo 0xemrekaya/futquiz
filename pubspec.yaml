@@ -18,6 +18,7 @@ dependencies:
   cloud_firestore: ^4.9.1
   firebase_core: ^2.15.1
   easy_autocomplete: ^1.6.0
+  animations: ^2.0.8
 
 dev_dependencies:
   flutter_test:

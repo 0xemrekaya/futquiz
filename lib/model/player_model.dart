@@ -21,6 +21,7 @@ class PlayerMapModel {
   String? nationalTeam;
   String? preferredFoot;
   int? skillMoves;
+  String? clubLogo;
 
   PlayerMapModel(
       {this.iD,
@@ -38,7 +39,9 @@ class PlayerMapModel {
       this.valueEUR,
       this.nationalTeam,
       this.preferredFoot,
-      this.skillMoves});
+      this.skillMoves,
+      this.clubLogo
+      });
 
   factory PlayerMapModel.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,

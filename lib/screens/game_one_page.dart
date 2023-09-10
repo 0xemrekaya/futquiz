@@ -20,20 +20,13 @@ class _GameOnePageState extends State<GameOnePage> {
   late int number;
   final _searchController = TextEditingController();
   List _selectedPlayers = [];
-  List _unselectedPlayers = [];
-  bool _isSelectedPlayer = false;
 
   @override
   void initState() {
+    searchPlayer();
     number = getRandomNumber();
     getPlayer(number);
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    searchPlayer();
-    super.didChangeDependencies();
   }
 
   Future<void> getPlayer(int num) async {
@@ -53,16 +46,13 @@ class _GameOnePageState extends State<GameOnePage> {
     });
   }
 
-  void showSelectedPlayers() {
-    _searchController.clear();
-    _unselectedPlayers = _allResults;
-    setState(() {
-      _isSelectedPlayer = true;
-      _unselectedPlayers.remove(_selectedPlayers.last);
-    });
-
-    print(_selectedPlayers);
-    print(_allResults);
+  Future<List<String>> _fetchSuggestions(String searchValue) async {
+    List<String> suggestions =
+        _searchController.text.isEmpty ? [] : _allResults.map((e) => "${e["Name"]} - ${e["Club"]}").toList();
+    List<String> filteredSuggestions = suggestions.where((element) {
+      return element.toLowerCase().contains(searchValue.toLowerCase());
+    }).toList();
+    return filteredSuggestions;
   }
 
   // This is not using at now because it doesnt work with ui design at now.
@@ -165,15 +155,23 @@ class _GameOnePageState extends State<GameOnePage> {
                       width: 250,
                       child: EasyAutocomplete(
                           controller: _searchController,
-                          suggestions: _isSelectedPlayer
-                              ? _unselectedPlayers
-                                  .map((e) => e["Name"].toString() + " - " + e["Club"].toString())
-                                  .toList()
-                              : _allResults.map((e) => e["Name"].toString() + " - " + e["Club"].toString()).toList(),
+                          progressIndicatorBuilder: const CircularProgressIndicator(),
+                          asyncSuggestions: (searchValue) async {
+                            return _fetchSuggestions(searchValue);
+                          },
+                          // suggestions: _searchController.text.isEmpty
+                          //     ? []
+                          //     : _allResults.map((e) => e["Name"].toString() + " - " + e["Club"].toString()).toList(),
                           onSubmitted: (p0) {
-                            _selectedPlayers.add(p0);
-                            showSelectedPlayers();
-                            setState(() {});
+                            for (var element in _allResults) {
+                              if ("${element["Name"]} - ${element["Club"]}" == p0) {
+                                _selectedPlayers.add(element);
+                              }
+                            }
+                            _searchController.clear();
+                            setState(() {
+                              _allResults.removeWhere((element) => _selectedPlayers.contains(element));
+                            });
                           },
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
@@ -193,10 +191,36 @@ class _GameOnePageState extends State<GameOnePage> {
                           }),
                     ),
                   ),
+                  Column(
+                    children: [
+                      SizedBox(
+                          height: 100 * _selectedPlayers.length.toDouble(),
+                          child: ListView.builder(
+                            itemCount: _selectedPlayers.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                height: 40,
+                                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                decoration: BoxDecoration(
+                                    color: const Color.fromARGB(218, 154, 226, 177),
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: ListTile(
+                                  title:
+                                      Text("${_selectedPlayers[index]["Name"]} - ${_selectedPlayers[index]["Club"]}"),
+                                      trailing: SizedBox(
+                                        width: 10,
+                                        height: 10,
+                                        child: Image.network(_selectedPlayers[index]["Nationality"])),
+                                ),
+                              );
+                            },
+                          ))
+                    ],
+                  )
                 ],
               ),
               SizedBox(
-                height: height / 5,
+                height: height / 20,
               ),
               ElevatedButton(
                   onPressed: () {
