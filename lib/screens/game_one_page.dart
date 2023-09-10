@@ -46,7 +46,6 @@ class _GameOnePageState extends State<GameOnePage> {
     });
   }
 
-
   Future<List<String>> _fetchSuggestions(String searchValue) async {
     List<String> suggestions =
         _searchController.text.isEmpty ? [] : _allResults.map((e) => "${e["Name"]} - ${e["Club"]}").toList();
@@ -87,148 +86,153 @@ class _GameOnePageState extends State<GameOnePage> {
     final textStyle = Theme.of(context).textTheme;
     return Scaffold(
       appBar: _appBar(context),
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: height / 30,
-          horizontal: width / 10,
-        ),
-        child: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          child: Column(
-            children: [
-              Text(
-                "Aşağıda iki ipucu verildi. Bu ipuçlarına göre futbolcuyu tahmin et!",
-                textAlign: TextAlign.center,
-                style: textStyle.titleMedium,
-              ),
-              SizedBox(
-                height: height / 40,
-              ),
-              Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Column(
-                        children: [
-                          const Text("Yaşı"),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: const Color(0xAA1737EB),
-                              borderRadius: BorderRadius.circular(10),
+      body: Scrollbar(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: height / 30,
+            horizontal: width / 10,
+          ),
+          child: SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            child: Column(
+              children: [
+                Text(
+                  "Aşağıda iki ipucu verildi. Bu ipuçlarına göre futbolcuyu tahmin et!",
+                  textAlign: TextAlign.center,
+                  style: textStyle.titleMedium,
+                ),
+                SizedBox(
+                  height: height / 40,
+                ),
+                Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Column(
+                          children: [
+                            const Text("Yaşı"),
+                            const SizedBox(
+                              height: 5,
                             ),
-                            child: Center(child: Observer(builder: (_) {
-                              return Text(player.playerMapModel?.age.toString() ?? "null");
-                            })),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          const Text("Pozisyonu"),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Container(
-                            width: 50,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              color: const Color(0xAA1737EB),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Center(child: Observer(builder: (_) {
-                              return Text(player.playerMapModel?.bestPosition ?? "null");
-                            })),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: height / 20, horizontal: width / 15),
-                    child: SizedBox(
-                      height: 50,
-                      width: 250,
-                      child: EasyAutocomplete(
-                          controller: _searchController,
-                          progressIndicatorBuilder: const CircularProgressIndicator(),
-                          asyncSuggestions: (searchValue) async {
-                            return _fetchSuggestions(searchValue);
-                          },
-                          // suggestions: _searchController.text.isEmpty
-                          //     ? []
-                          //     : _allResults.map((e) => e["Name"].toString() + " - " + e["Club"].toString()).toList(),
-                          onSubmitted: (p0) {
-                            for (var element in _allResults) {
-                              if ("${element["Name"]} - ${element["Club"]}" == p0) {
-                                _selectedPlayers.add(element);
-                              }
-                            }
-                            _searchController.clear();
-                            setState(() {
-                              _allResults.removeWhere((element) => _selectedPlayers.contains(element));
-                            });
-                          },
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                            border: OutlineInputBorder(
+                            Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: const Color(0xAA1737EB),
                                 borderRadius: BorderRadius.circular(10),
-                                borderSide: const BorderSide(style: BorderStyle.solid)),
-                          ),
-                          suggestionBuilder: (data) {
-                            return Container(
-                                width: 250,
-                                margin: const EdgeInsets.all(1),
-                                padding: const EdgeInsets.all(7),
-                                decoration: BoxDecoration(
-                                    color: const Color.fromARGB(218, 154, 226, 177),
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: Text(data, style: const TextStyle(color: Colors.white)));
-                          }),
+                              ),
+                              child: Center(child: Observer(builder: (_) {
+                                return Text(player.playerMapModel?.age.toString() ?? "null");
+                              })),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            const Text("Pozisyonu"),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                color: const Color(0xAA1737EB),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Center(child: Observer(builder: (_) {
+                                return Text(player.playerMapModel?.bestPosition ?? "null");
+                              })),
+                            ),
+                          ],
+                        )
+                      ],
                     ),
-                  ),
-                  Column(
-                    children: [
-                      SizedBox(
-                          height: 100 * _selectedPlayers.length.toDouble(),
-                          child: ListView.builder(
-                            itemCount: _selectedPlayers.length,
-                            itemBuilder: (context, index) {
-                              return Container(
-                                height: 40,
-                                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                                decoration: BoxDecoration(
-                                    color: const Color.fromARGB(218, 154, 226, 177),
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: ListTile(
-                                    title: Text(
-                                        "${_selectedPlayers[index]["Name"]} - ${_selectedPlayers[index]["Positions"]}"),
-                                    leading: Image.network(_selectedPlayers[index]["Nationality"] ?? "")),
-                              );
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: height / 20, horizontal: width / 15),
+                      child: SizedBox(
+                        height: 50,
+                        width: 250,
+                        child: EasyAutocomplete(
+                          
+                            controller: _searchController,
+                            progressIndicatorBuilder: const CircularProgressIndicator(),
+                            asyncSuggestions: (searchValue) async {
+                              return _fetchSuggestions(searchValue);
                             },
-                          ))
-                    ],
-                  )
-                ],
-              ),
-              SizedBox(
-                height: height / 20,
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    number = getRandomNumber();
-                    getPlayer(number);
-                  },
-                  child: const Text("Skip")),
-              Observer(builder: (_) {
-                return Text(player.playerMapModel?.name ?? "null");
-              }),
-            ],
+                            // suggestions: _searchController.text.isEmpty
+                            //     ? []
+                            //     : _allResults.map((e) => e["Name"].toString() + " - " + e["Club"].toString()).toList(),
+                            onSubmitted: (p0) {
+                              for (var element in _allResults) {
+                                if ("${element["Name"]} - ${element["Club"]}" == p0) {
+                                  _selectedPlayers.add(element);
+                                }
+                              }
+                              _searchController.clear();
+                              setState(() {
+                                _allResults.removeWhere((element) => _selectedPlayers.contains(element));
+                              });
+                            },
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: const BorderSide(style: BorderStyle.solid)),
+                            ),
+                            suggestionBuilder: (data) {
+                              return Container(
+                                  width: 250,
+                                  margin: const EdgeInsets.all(1),
+                                  padding: const EdgeInsets.all(7),
+                                  decoration: BoxDecoration(
+                                      color: const Color.fromARGB(218, 154, 226, 177),
+                                      borderRadius: BorderRadius.circular(5)),
+                                  child: Text(data, style: const TextStyle(color: Colors.white)));
+                            }),
+                      ),
+                    ),
+                    Column(
+                      children: [
+                        SizedBox(
+                            height: 100 * _selectedPlayers.length.toDouble(),
+                            child: ListView.builder(
+                              itemCount: _selectedPlayers.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  height: 70,
+                                  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                  decoration: BoxDecoration(
+                                      color: const Color.fromARGB(218, 154, 226, 177),
+                                      borderRadius: BorderRadius.circular(5)),
+                                  child: ListTile(
+                                      title: Text("${_selectedPlayers[index]["Name"]}"),
+                                      leading: Image.network(_selectedPlayers[index]["PhotoUrl"] ?? ""),
+                                      subtitle: Text("${_selectedPlayers[index]["Club"]}"),
+                                      trailing: Image.network(_selectedPlayers[index]["Nationality"] ?? "")
+                                      ),
+                                );
+                              },
+                            ))
+                      ],
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: height / 20,
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      number = getRandomNumber();
+                      getPlayer(number);
+                    },
+                    child: const Text("Skip")),
+                Observer(builder: (_) {
+                  return Text(player.playerMapModel?.name ?? "null");
+                }),
+              ],
+            ),
           ),
         ),
       ),
