@@ -236,14 +236,16 @@ class _GameOnePageState extends State<GameOnePage> {
                                   borderSide: const BorderSide(style: BorderStyle.solid)),
                             ),
                             suggestionBuilder: (data) {
-                              return Container(
-                                  width: 250,
-                                  margin: const EdgeInsets.all(3),
-                                  padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                      color: const Color.fromARGB(218, 154, 226, 177),
-                                      borderRadius: BorderRadius.circular(5)),
-                                  child: Text(data, style: const TextStyle(color: Colors.white)));
+                              return Card(
+                                child: Container(
+                                    width: 250,
+                                    margin: const EdgeInsets.all(1),
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                        color: const Color.fromARGB(218, 154, 226, 177),
+                                        borderRadius: BorderRadius.circular(5)),
+                                    child: Text(data, style: const TextStyle(color: Colors.white))),
+                              );
                             }),
                       ),
                     ),
@@ -257,18 +259,130 @@ class _GameOnePageState extends State<GameOnePage> {
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: _selectedPlayers.length,
                               itemBuilder: (context, index) {
-                                return Container(
-                                  height: 70,
-                                  margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                                  decoration: BoxDecoration(
-                                      color: const Color.fromARGB(218, 154, 226, 177),
-                                      borderRadius: BorderRadius.circular(5)),
-                                  child: ListTile(
-                                      title: Text("${_selectedPlayers[index]["Name"]}"),
-                                      leading: Image.network(_selectedPlayers[index]["PhotoUrl"] ?? ""),
-                                      subtitle: Text("${_selectedPlayers[index]["Club"]}"),
-                                      trailing: Image.network(_selectedPlayers[index]["Nationality"] ?? "")),
-                                );
+                                return Card(
+                                    color: const Color.fromARGB(63, 23, 55, 235),
+                                    shadowColor: Colors.black,
+                                    child: ListTile(
+                                        title: Text(
+                                          "${_selectedPlayers[index]["Name"]}",
+                                          style: textStyle.bodyMedium,
+                                        ),
+                                        leading: SizedBox(
+                                            width: 40, child: Image.network(_selectedPlayers[index]["PhotoUrl"] ?? "")),
+                                        trailing: SizedBox(
+                                          width: 170,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Container(
+                                                height: 40,
+                                                width: 40,
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xAA1737EB),
+                                                  borderRadius: BorderRadius.circular(50),
+                                                ),
+                                                child: Center(
+                                                  child: AnimatedCrossFade(
+                                                    firstChild: Icon(Icons.ac_unit),
+                                                    secondChild: Text(
+                                                      "${_selectedPlayers[index]["Age"]}",
+                                                      style: textStyle.bodyMedium,
+                                                    ),
+                                                    crossFadeState: CrossFadeState.showSecond,
+                                                    duration: const Duration(milliseconds: 500),
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                height: 40,
+                                                width: 40,
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xAA1737EB),
+                                                  borderRadius: BorderRadius.circular(50),
+                                                ),
+                                                child: Center(
+                                                  child: AnimatedCrossFade(
+                                                    firstChild: Icon(Icons.ac_unit),
+                                                    secondChild: Text(
+                                                      "${_selectedPlayers[index]["BestPosition"]}",
+                                                      style: textStyle.bodyMedium,
+                                                    ),
+                                                    crossFadeState: CrossFadeState.showSecond,
+                                                    duration: const Duration(milliseconds: 500),
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                height: 40,
+                                                width: 40,
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xAA1737EB),
+                                                  borderRadius: BorderRadius.circular(50),
+                                                ),
+                                                child: Center(
+                                                  child: AnimatedCrossFade(
+                                                      firstChild: Icon(Icons.ac_unit),
+                                                      crossFadeState: CrossFadeState.showSecond,
+                                                      duration: const Duration(milliseconds: 500),
+                                                      secondChild: Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child:
+                                                            Image.network(_selectedPlayers[index]["Nationality"] ?? ""),
+                                                      )),
+                                                ),
+                                              ),
+                                              Container(
+                                                height: 40,
+                                                width: 40,
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xAA1737EB),
+                                                  borderRadius: BorderRadius.circular(50),
+                                                ),
+                                                child: Center(
+                                                  child: AnimatedCrossFade(
+                                                    firstChild: Icon(Icons.ac_unit),
+                                                    secondChild: Padding(
+                                                      padding: const EdgeInsets.all(10.0),
+                                                      child: Image.network("${_selectedPlayers[index]["ClubLogo"]}"),
+                                                    ),
+                                                    crossFadeState: CrossFadeState.showSecond,
+                                                    duration: const Duration(milliseconds: 500),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )));
+                                // return Container(
+                                //   height: 70,
+                                //   margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                //   decoration: BoxDecoration(
+                                //       color: const Color.fromARGB(63, 23, 55, 235),
+                                //       borderRadius: BorderRadius.circular(5)),
+                                //   child: ListTile(
+                                //       title: Text("${_selectedPlayers[index]["Name"]}"),
+                                //       leading: Image.network(_selectedPlayers[index]["PhotoUrl"] ?? ""),
+                                //       trailing: Container(
+
+                                //         width: 120,
+                                //         child: Row(
+                                //           mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                //           children: [
+                                //             AnimatedCrossFade(
+                                //                 firstChild: Icon(Icons.ac_unit),
+                                //                 crossFadeState: CrossFadeState.showSecond,
+                                //                 duration: const Duration(milliseconds: 500),
+                                //                 secondChild: Image.network(_selectedPlayers[index]["Nationality"] ?? "")),
+                                //             AnimatedCrossFade(
+                                //               firstChild: Icon(Icons.ac_unit),
+                                //               secondChild: Image.network("${_selectedPlayers[index]["ClubLogo"]}"),
+                                //               crossFadeState: CrossFadeState.showSecond,
+                                //               duration: const Duration(milliseconds: 500),
+                                //             )
+                                //           ],
+                                //         ),
+                                //       )),
+                                // );
                               },
                             ),
                           ),
