@@ -19,6 +19,7 @@ class _GameOnePageState extends State<GameOnePage> {
   PlayerMapViewModel player = PlayerMapViewModel();
   late int number;
   final _searchController = TextEditingController();
+  final _scrollController = ScrollController();
   List _selectedPlayers = [];
 
   @override
@@ -75,6 +76,7 @@ class _GameOnePageState extends State<GameOnePage> {
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
   }
@@ -87,12 +89,13 @@ class _GameOnePageState extends State<GameOnePage> {
     return Scaffold(
       appBar: _appBar(context),
       body: Scrollbar(
+        isAlwaysShown: true,
         child: Padding(
           padding: EdgeInsets.symmetric(
-            vertical: height / 30,
-            horizontal: width / 10,
+            vertical: height / 50,
           ),
           child: SingleChildScrollView(
+            controller: _scrollController,
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             child: Column(
               children: [
@@ -155,7 +158,6 @@ class _GameOnePageState extends State<GameOnePage> {
                         height: 50,
                         width: 250,
                         child: EasyAutocomplete(
-                          
                             controller: _searchController,
                             progressIndicatorBuilder: const CircularProgressIndicator(),
                             asyncSuggestions: (searchValue) async {
@@ -168,9 +170,15 @@ class _GameOnePageState extends State<GameOnePage> {
                               for (var element in _allResults) {
                                 if ("${element["Name"]} - ${element["Club"]}" == p0) {
                                   _selectedPlayers.add(element);
+                                  _searchController.clear();
                                 }
                               }
-                              _searchController.clear();
+                              _scrollController.animateTo(
+                                _scrollController.position.maxScrollExtent,
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.easeOut,
+                              );
+
                               setState(() {
                                 _allResults.removeWhere((element) => _selectedPlayers.contains(element));
                               });
@@ -184,8 +192,8 @@ class _GameOnePageState extends State<GameOnePage> {
                             suggestionBuilder: (data) {
                               return Container(
                                   width: 250,
-                                  margin: const EdgeInsets.all(1),
-                                  padding: const EdgeInsets.all(7),
+                                  margin: const EdgeInsets.all(3),
+                                  padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
                                       color: const Color.fromARGB(218, 154, 226, 177),
                                       borderRadius: BorderRadius.circular(5)),
@@ -195,9 +203,12 @@ class _GameOnePageState extends State<GameOnePage> {
                     ),
                     Column(
                       children: [
-                        SizedBox(
-                            height: 100 * _selectedPlayers.length.toDouble(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: SizedBox(
+                            height: 80 * _selectedPlayers.length.toDouble(),
                             child: ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
                               itemCount: _selectedPlayers.length,
                               itemBuilder: (context, index) {
                                 return Container(
@@ -210,11 +221,12 @@ class _GameOnePageState extends State<GameOnePage> {
                                       title: Text("${_selectedPlayers[index]["Name"]}"),
                                       leading: Image.network(_selectedPlayers[index]["PhotoUrl"] ?? ""),
                                       subtitle: Text("${_selectedPlayers[index]["Club"]}"),
-                                      trailing: Image.network(_selectedPlayers[index]["Nationality"] ?? "")
-                                      ),
+                                      trailing: Image.network(_selectedPlayers[index]["Nationality"] ?? "")),
                                 );
                               },
-                            ))
+                            ),
+                          ),
+                        )
                       ],
                     )
                   ],
