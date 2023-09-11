@@ -1,6 +1,6 @@
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:confetti/confetti.dart';
 import 'package:easy_autocomplete/easy_autocomplete.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -20,6 +20,7 @@ class _GameOnePageState extends State<GameOnePage> {
   late int number;
   final _searchController = TextEditingController();
   final _scrollController = ScrollController();
+  final _confettiController = ConfettiController();
   List _selectedPlayers = [];
 
   @override
@@ -47,9 +48,27 @@ class _GameOnePageState extends State<GameOnePage> {
     });
   }
 
+//${element["Name"]} - ${element["Club"]}
+  void _correct(String id) {
+    showDialog(
+        context: context,
+        builder: (context) => ConfettiWidget(
+            confettiController: _confettiController,
+            shouldLoop: false,
+            blastDirectionality: BlastDirectionality.explosive,
+            numberOfParticles: 50,
+            child: const AlertDialog(title: Text("Correct!"))));
+    number = getRandomNumber();
+    getPlayer(number);
+    setState(() {
+      _selectedPlayers.clear();
+      searchPlayer();
+      _scrollController.jumpTo(0);
+    });
+  }
+
   Future<List<String>> _fetchSuggestions(String searchValue) async {
-    List<String> suggestions =
-        _searchController.text.isEmpty ? [] : _allResults.map((e) => "${e["Name"]} - ${e["Club"]}").toList();
+    List<String> suggestions = _allResults.map((e) => "${e["Name"]} - ${e["Club"]}").toList();
     List<String> filteredSuggestions = suggestions.where((element) {
       return element.toLowerCase().contains(searchValue.toLowerCase());
     }).toList();
@@ -76,6 +95,7 @@ class _GameOnePageState extends State<GameOnePage> {
 
   @override
   void dispose() {
+    _confettiController.dispose();
     _scrollController.dispose();
     _searchController.dispose();
     super.dispose();
@@ -173,12 +193,16 @@ class _GameOnePageState extends State<GameOnePage> {
                                   _searchController.clear();
                                 }
                               }
+                              String id = player.playerMapModel!.iD.toString();
+                              if (_selectedPlayers.map((e) => "${e["ID"]}").contains(id)) {
+                                _correct(id);
+                                _confettiController.play();
+                              }
                               _scrollController.animateTo(
                                 _scrollController.position.maxScrollExtent,
                                 duration: const Duration(milliseconds: 500),
                                 curve: Curves.easeOut,
                               );
-
                               setState(() {
                                 _allResults.removeWhere((element) => _selectedPlayers.contains(element));
                               });

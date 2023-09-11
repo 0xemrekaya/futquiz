@@ -19,6 +19,7 @@ dependencies:
   firebase_core: ^2.15.1
   easy_autocomplete: ^1.6.0
   animations: ^2.0.8
+  confetti: ^0.7.0
 
 dev_dependencies:
   flutter_test:
