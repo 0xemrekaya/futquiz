@@ -52,12 +52,34 @@ class _GameOnePageState extends State<GameOnePage> {
   void _correct(String id) {
     showDialog(
         context: context,
-        builder: (context) => ConfettiWidget(
-            confettiController: _confettiController,
-            shouldLoop: false,
-            blastDirectionality: BlastDirectionality.explosive,
-            numberOfParticles: 50,
-            child: const AlertDialog(title: Text("Correct!"))));
+        builder: (context) => Stack(
+              children: [
+                Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: ConfettiWidget(
+                      confettiController: _confettiController,
+                      shouldLoop: false,
+                      blastDirectionality: BlastDirectionality.explosive,
+                      numberOfParticles: 50,
+                    ),
+                  ),
+                ),
+                Center(
+                  child: AlertDialog(
+                    title: const Text("Tebrikler, doğru bildiniz!"),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("Tamam"),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ));
     number = getRandomNumber();
     getPlayer(number);
     setState(() {
