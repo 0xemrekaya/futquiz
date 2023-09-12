@@ -50,7 +50,23 @@ class _GameOnePageState extends State<GameOnePage> {
     });
   }
 
-//${element["Name"]} - ${element["Club"]}
+  void _skipPlayer() {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      width: 200,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
+      content: Center(child: Text("Futbolcu atlandı!")),
+      duration: Duration(milliseconds: 1000),
+    ));
+    number = getRandomNumber();
+    getPlayer(number);
+    setState(() {
+      _selectedPlayers.clear();
+      searchPlayer();
+      _scrollController.jumpTo(0);
+    });
+  }
+
   void _correct(String id) {
     showDialog(
         context: context,
@@ -188,13 +204,9 @@ class _GameOnePageState extends State<GameOnePage> {
                     )
                   ],
                 ),
-                SizedBox(
-                  height: height / 20,
-                ),
                 ElevatedButton(
                     onPressed: () {
-                      number = getRandomNumber();
-                      getPlayer(number);
+                      _skipPlayer();
                     },
                     child: const Text("Skip")),
                 Observer(builder: (_) {
