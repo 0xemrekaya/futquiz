@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
 import '../modelview/map_view_model.dart';
+import '../utility/selected_player_card.dart';
 
 class GameOnePage extends StatefulWidget {
   const GameOnePage({super.key});
@@ -18,6 +19,7 @@ class GameOnePage extends StatefulWidget {
 class _GameOnePageState extends State<GameOnePage> {
   PlayerMapViewModel player = PlayerMapViewModel();
   late int number;
+  final String _tite = "Aşağıda iki ipucu verildi. Bu ipuçlarına göre futbolcuyu tahmin et!";
   final _searchController = TextEditingController();
   final _scrollController = ScrollController();
   final _confettiController = ConfettiController();
@@ -142,7 +144,7 @@ class _GameOnePageState extends State<GameOnePage> {
             child: Column(
               children: [
                 Text(
-                  "Aşağıda iki ipucu verildi. Bu ipuçlarına göre futbolcuyu tahmin et!",
+                  _tite,
                   textAlign: TextAlign.center,
                   style: textStyle.titleMedium,
                 ),
@@ -153,100 +155,14 @@ class _GameOnePageState extends State<GameOnePage> {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            const Text("Yaşı"),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: const Color(0xAA1737EB),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Center(child: Observer(builder: (_) {
-                                return Text(player.playerMapModel?.age.toString() ?? "null");
-                              })),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            const Text("Pozisyonu"),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: const Color(0xAA1737EB),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Center(child: Observer(builder: (_) {
-                                return Text(player.playerMapModel?.bestPosition ?? "null");
-                              })),
-                            ),
-                          ],
-                        )
-                      ],
+                      children: [ageOfPlayer(), positionOfPlayer()],
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: height / 20, horizontal: width / 15),
                       child: SizedBox(
                         height: 50,
                         width: 250,
-                        child: EasyAutocomplete(
-                            controller: _searchController,
-                            progressIndicatorBuilder: const CircularProgressIndicator(),
-                            asyncSuggestions: (searchValue) async {
-                              return _fetchSuggestions(searchValue);
-                            },
-                            // suggestions: _searchController.text.isEmpty
-                            //     ? []
-                            //     : _allResults.map((e) => e["Name"].toString() + " - " + e["Club"].toString()).toList(),
-                            onSubmitted: (p0) {
-                              for (var element in _allResults) {
-                                if ("${element["Name"]} - ${element["Club"]}" == p0) {
-                                  _selectedPlayers.add(element);
-                                  _searchController.clear();
-                                }
-                              }
-                              String id = player.playerMapModel!.iD.toString();
-                              if (_selectedPlayers.map((e) => "${e["ID"]}").contains(id)) {
-                                _correct(id);
-                                _confettiController.play();
-                              }
-                              _scrollController.animateTo(
-                                _scrollController.position.maxScrollExtent,
-                                duration: const Duration(milliseconds: 500),
-                                curve: Curves.easeOut,
-                              );
-                              setState(() {
-                                _allResults.removeWhere((element) => _selectedPlayers.contains(element));
-                              });
-                            },
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide: const BorderSide(style: BorderStyle.solid)),
-                            ),
-                            suggestionBuilder: (data) {
-                              return Card(
-                                child: Container(
-                                    width: 250,
-                                    margin: const EdgeInsets.all(1),
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                        color: const Color.fromARGB(218, 154, 226, 177),
-                                        borderRadius: BorderRadius.circular(5)),
-                                    child: Text(data, style: const TextStyle(color: Colors.white))),
-                              );
-                            }),
+                        child: searchingPlayer(),
                       ),
                     ),
                     Column(
@@ -259,130 +175,11 @@ class _GameOnePageState extends State<GameOnePage> {
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: _selectedPlayers.length,
                               itemBuilder: (context, index) {
-                                return Card(
-                                    color: const Color.fromARGB(63, 23, 55, 235),
-                                    shadowColor: Colors.black,
-                                    child: ListTile(
-                                        title: Text(
-                                          "${_selectedPlayers[index]["Name"]}",
-                                          style: textStyle.bodyMedium,
-                                        ),
-                                        leading: SizedBox(
-                                            width: 40, child: Image.network(_selectedPlayers[index]["PhotoUrl"] ?? "")),
-                                        trailing: SizedBox(
-                                          width: 170,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                            children: [
-                                              Container(
-                                                height: 40,
-                                                width: 40,
-                                                decoration: BoxDecoration(
-                                                  color: const Color(0xAA1737EB),
-                                                  borderRadius: BorderRadius.circular(50),
-                                                ),
-                                                child: Center(
-                                                  child: AnimatedCrossFade(
-                                                    firstChild: Icon(Icons.ac_unit),
-                                                    secondChild: Text(
-                                                      "${_selectedPlayers[index]["Age"]}",
-                                                      style: textStyle.bodyMedium,
-                                                    ),
-                                                    crossFadeState: CrossFadeState.showSecond,
-                                                    duration: const Duration(milliseconds: 500),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                height: 40,
-                                                width: 40,
-                                                decoration: BoxDecoration(
-                                                  color: const Color(0xAA1737EB),
-                                                  borderRadius: BorderRadius.circular(50),
-                                                ),
-                                                child: Center(
-                                                  child: AnimatedCrossFade(
-                                                    firstChild: Icon(Icons.ac_unit),
-                                                    secondChild: Text(
-                                                      "${_selectedPlayers[index]["BestPosition"]}",
-                                                      style: textStyle.bodyMedium,
-                                                    ),
-                                                    crossFadeState: CrossFadeState.showSecond,
-                                                    duration: const Duration(milliseconds: 500),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                height: 40,
-                                                width: 40,
-                                                decoration: BoxDecoration(
-                                                  color: const Color(0xAA1737EB),
-                                                  borderRadius: BorderRadius.circular(50),
-                                                ),
-                                                child: Center(
-                                                  child: AnimatedCrossFade(
-                                                      firstChild: Icon(Icons.ac_unit),
-                                                      crossFadeState: CrossFadeState.showSecond,
-                                                      duration: const Duration(milliseconds: 500),
-                                                      secondChild: Padding(
-                                                        padding: const EdgeInsets.all(10.0),
-                                                        child:
-                                                            Image.network(_selectedPlayers[index]["Nationality"] ?? ""),
-                                                      )),
-                                                ),
-                                              ),
-                                              Container(
-                                                height: 40,
-                                                width: 40,
-                                                decoration: BoxDecoration(
-                                                  color: const Color(0xAA1737EB),
-                                                  borderRadius: BorderRadius.circular(50),
-                                                ),
-                                                child: Center(
-                                                  child: AnimatedCrossFade(
-                                                    firstChild: Icon(Icons.ac_unit),
-                                                    secondChild: Padding(
-                                                      padding: const EdgeInsets.all(10.0),
-                                                      child: Image.network("${_selectedPlayers[index]["ClubLogo"]}"),
-                                                    ),
-                                                    crossFadeState: CrossFadeState.showSecond,
-                                                    duration: const Duration(milliseconds: 500),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )));
-                                // return Container(
-                                //   height: 70,
-                                //   margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                                //   decoration: BoxDecoration(
-                                //       color: const Color.fromARGB(63, 23, 55, 235),
-                                //       borderRadius: BorderRadius.circular(5)),
-                                //   child: ListTile(
-                                //       title: Text("${_selectedPlayers[index]["Name"]}"),
-                                //       leading: Image.network(_selectedPlayers[index]["PhotoUrl"] ?? ""),
-                                //       trailing: Container(
-
-                                //         width: 120,
-                                //         child: Row(
-                                //           mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                //           children: [
-                                //             AnimatedCrossFade(
-                                //                 firstChild: Icon(Icons.ac_unit),
-                                //                 crossFadeState: CrossFadeState.showSecond,
-                                //                 duration: const Duration(milliseconds: 500),
-                                //                 secondChild: Image.network(_selectedPlayers[index]["Nationality"] ?? "")),
-                                //             AnimatedCrossFade(
-                                //               firstChild: Icon(Icons.ac_unit),
-                                //               secondChild: Image.network("${_selectedPlayers[index]["ClubLogo"]}"),
-                                //               crossFadeState: CrossFadeState.showSecond,
-                                //               duration: const Duration(milliseconds: 500),
-                                //             )
-                                //           ],
-                                //         ),
-                                //       )),
-                                // );
+                                return SelectedPlayerCard(
+                                  selectedPlayers: _selectedPlayers,
+                                  index: index,
+                                  player: player,
+                                );
                               },
                             ),
                           ),
@@ -409,6 +206,99 @@ class _GameOnePageState extends State<GameOnePage> {
         ),
       ),
     );
+  }
+
+  Column positionOfPlayer() {
+    return Column(
+      children: [
+        const Text("Pozisyonu"),
+        const SizedBox(
+          height: 5,
+        ),
+        Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            color: const Color(0xAA1737EB),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Center(child: Observer(builder: (_) {
+            return Text(player.playerMapModel?.bestPosition ?? "null");
+          })),
+        ),
+      ],
+    );
+  }
+
+  Column ageOfPlayer() {
+    return Column(
+      children: [
+        const Text("Yaşı"),
+        const SizedBox(
+          height: 5,
+        ),
+        Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            color: const Color(0xAA1737EB),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Center(child: Observer(builder: (_) {
+            return Text(player.playerMapModel?.age.toString() ?? "null");
+          })),
+        ),
+      ],
+    );
+  }
+
+  EasyAutocomplete searchingPlayer() {
+    return EasyAutocomplete(
+        controller: _searchController,
+        progressIndicatorBuilder: const CircularProgressIndicator(),
+        asyncSuggestions: (searchValue) async {
+          return _fetchSuggestions(searchValue);
+        },
+        // suggestions: _searchController.text.isEmpty
+        //     ? []
+        //     : _allResults.map((e) => e["Name"].toString() + " - " + e["Club"].toString()).toList(),
+        onSubmitted: (p0) {
+          for (var element in _allResults) {
+            if ("${element["Name"]} - ${element["Club"]}" == p0) {
+              _selectedPlayers.add(element);
+              _searchController.clear();
+            }
+          }
+          String id = player.playerMapModel!.iD.toString();
+          if (_selectedPlayers.map((e) => "${e["ID"]}").contains(id)) {
+            _correct(id);
+            _confettiController.play();
+          }
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeOut,
+          );
+          setState(() {
+            _allResults.removeWhere((element) => _selectedPlayers.contains(element));
+          });
+        },
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+          border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(style: BorderStyle.solid)),
+        ),
+        suggestionBuilder: (data) {
+          return Card(
+            child: Container(
+                width: 250,
+                margin: const EdgeInsets.all(1),
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    color: const Color.fromARGB(218, 154, 226, 177), borderRadius: BorderRadius.circular(5)),
+                child: Text(data, style: const TextStyle(color: Colors.white))),
+          );
+        });
   }
 
   AppBar _appBar(BuildContext context) {
