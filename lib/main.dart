@@ -1,13 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:futquiz/screens/splash_page.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'firebase_options.dart';
 import 'screens/game_one_page.dart';
 import 'screens/home_page.dart';
-import 'screens/home_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await PackageInfo.fromPlatform();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -30,7 +32,8 @@ class MainApp extends StatelessWidget {
         routes: {
           HomePage.id: (context) => const HomePage(),
           GameOnePage.id: (context) => const GameOnePage(),
+          SplashPage.id: (context) => const SplashPage(),
         },
-        home: const HomePage());
+        home: const SplashPage());
   }
 }

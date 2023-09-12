@@ -55,7 +55,7 @@ class _GameOnePageState extends State<GameOnePage> {
       width: 200,
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(50))),
-      content: Center(child: Text("Futbolcu atlandı!")),
+      content: Center(child: Text("Futbolcu değiştirildi!")),
       duration: Duration(milliseconds: 1000),
     ));
     number = getRandomNumber();
@@ -208,7 +208,7 @@ class _GameOnePageState extends State<GameOnePage> {
                     onPressed: () {
                       _skipPlayer();
                     },
-                    child: const Text("Skip")),
+                    child: const Text("Futbolcuyu değiştir")),
               ],
             ),
           ),
@@ -285,8 +285,8 @@ class _GameOnePageState extends State<GameOnePage> {
           }
           _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeOut,
+            duration: const Duration(milliseconds: 1000),
+            curve: Curves.linear,
           );
           setState(() {
             _allResults.removeWhere((element) => _selectedPlayers.contains(element));

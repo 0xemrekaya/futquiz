@@ -1,7 +1,7 @@
 name: futquiz
 description: A new Flutter project.
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.1
 
 environment:
   sdk: '>=3.0.5 <4.0.0'
@@ -20,6 +20,8 @@ dependencies:
   easy_autocomplete: ^1.6.0
   animations: ^2.0.8
   confetti: ^0.7.0
+  lottie: ^2.6.0
+  package_info_plus: ^4.1.0
 
 dev_dependencies:
   flutter_test:
@@ -30,3 +32,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/lottie/
