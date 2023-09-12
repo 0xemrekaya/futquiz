@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../modelview/map_view_model.dart';
 
 class SelectedPlayerCard extends StatelessWidget {
-  SelectedPlayerCard({
+  const SelectedPlayerCard({
     super.key,
     required List selectedPlayers,
     required this.index,
@@ -11,7 +11,7 @@ class SelectedPlayerCard extends StatelessWidget {
   }) : _selectedPlayers = selectedPlayers;
 
   final List _selectedPlayers;
-  int index;
+  final int index;
   final PlayerMapViewModel player;
   @override
   Widget build(BuildContext context) {

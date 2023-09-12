@@ -209,9 +209,6 @@ class _GameOnePageState extends State<GameOnePage> {
                       _skipPlayer();
                     },
                     child: const Text("Skip")),
-                Observer(builder: (_) {
-                  return Text(player.playerMapModel?.name ?? "null");
-                }),
               ],
             ),
           ),
