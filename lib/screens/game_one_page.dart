@@ -19,6 +19,8 @@ class GameOnePage extends StatefulWidget {
 class _GameOnePageState extends State<GameOnePage> {
   PlayerMapViewModel player = PlayerMapViewModel();
   late int number;
+  final String _posImgUrl =
+      "https://firebasestorage.googleapis.com/v0/b/futquiz-261d5.appspot.com/o/playing%2Fpositions.jpg?alt=media&token=876d5c8a-7188-433d-aa45-4fe0fe221da3";
   final String appLogoUrl =
       "https://firebasestorage.googleapis.com/v0/b/futquiz-261d5.appspot.com/o/logo%2FScreenshot_1.png?alt=media&token=4a12ec99-1e77-4d33-8ee8-13477c3f781d";
   final String _tite = "Aşağıda iki ipucu verildi. Bu ipuçlarına göre futbolcuyu tahmin et!";
@@ -149,7 +151,7 @@ class _GameOnePageState extends State<GameOnePage> {
     final width = MediaQuery.of(context).size.width;
     final textStyle = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: _appBar(context),
+      appBar: _appBar(context, height, width),
       body: Scrollbar(
         isAlwaysShown: true,
         child: Padding(
@@ -184,7 +186,7 @@ class _GameOnePageState extends State<GameOnePage> {
                       child: SizedBox(
                         height: 50,
                         width: 300,
-                        child: searchingPlayer(),
+                        child: searchingPlayer(textStyle),
                       ),
                     ),
                     Column(
@@ -258,7 +260,7 @@ class _GameOnePageState extends State<GameOnePage> {
           width: 50,
           height: 50,
           decoration: BoxDecoration(
-            color: image ? Colors.white : const Color(0xAA1737EB),
+            color: image ? Colors.white : Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Center(child: Observer(builder: (_) {
@@ -276,7 +278,7 @@ class _GameOnePageState extends State<GameOnePage> {
     );
   }
 
-  EasyAutocomplete searchingPlayer() {
+  EasyAutocomplete searchingPlayer(TextTheme textStyle) {
     return EasyAutocomplete(
         controller: _searchController,
         progressIndicatorBuilder: const CircularProgressIndicator(),
@@ -315,17 +317,18 @@ class _GameOnePageState extends State<GameOnePage> {
         suggestionBuilder: (data) {
           return Card(
             child: Container(
+              
                 width: 250,
                 margin: const EdgeInsets.all(1),
                 padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    color: const Color.fromARGB(218, 154, 226, 177), borderRadius: BorderRadius.circular(5)),
-                child: Text(data, style: const TextStyle(color: Colors.white))),
+                decoration:
+                    BoxDecoration(color: Theme.of(context).colorScheme.primary, borderRadius: BorderRadius.circular(5)),
+                child: Text(data, style: textStyle.bodyMedium!.copyWith(color: Colors.white))),
           );
         });
   }
 
-  AppBar _appBar(BuildContext context) {
+  AppBar _appBar(BuildContext context, double height, double width) {
     return AppBar(
       title: const Align(
           alignment: Alignment.center,
@@ -335,9 +338,29 @@ class _GameOnePageState extends State<GameOnePage> {
       actions: [
         IconButton(
           onPressed: () {
-            Navigator.pushReplacementNamed(context, "home_page");
+            showDialog(
+                context: context,
+                builder: (context) => Padding(
+                      padding: EdgeInsets.symmetric(vertical: height / 8, horizontal: width / 20),
+                      child: Dialog(
+                        backgroundColor: const Color.fromARGB(170, 3, 49, 81),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text("Oyuncu pozisyon bilgilendirmesi"),
+                            Image.network(
+                              _posImgUrl,
+                              height: height / 2,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ));
           },
-          icon: const Icon(Icons.exit_to_app_rounded),
+          icon: Icon(
+            Icons.info_outline_rounded,
+            color: Theme.of(context).colorScheme.primary,
+          ),
         ),
       ],
     );

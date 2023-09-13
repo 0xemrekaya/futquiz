@@ -31,7 +31,7 @@ class HomePage extends StatelessWidget {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, "game_one_page");
+                      Navigator.pushNamed(context, "game_one_page");
                     },
                     style: ButtonStyle(
                       padding: MaterialStateProperty.all<EdgeInsets>(
