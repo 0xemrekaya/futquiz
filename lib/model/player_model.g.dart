@@ -25,4 +25,5 @@ PlayerMapModel _$PlayerMapModelFromJson(Map<String, dynamic> json) =>
       preferredFoot: json['PreferredFoot'] as String?,
       skillMoves: json['SkillMoves'] as int?,
       clubLogo: json['ClubLogo'] as String?,
+      leagueLogo: json['LeagueLogo'] as String?,
     );

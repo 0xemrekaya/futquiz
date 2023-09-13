@@ -22,6 +22,7 @@ class PlayerMapModel {
   String? preferredFoot;
   int? skillMoves;
   String? clubLogo;
+  String? leagueLogo;
 
   PlayerMapModel(
       {this.iD,
@@ -40,7 +41,8 @@ class PlayerMapModel {
       this.nationalTeam,
       this.preferredFoot,
       this.skillMoves,
-      this.clubLogo
+      this.clubLogo,
+      this.leagueLogo
       });
 
   factory PlayerMapModel.fromFirestore(

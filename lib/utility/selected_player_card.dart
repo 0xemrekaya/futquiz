@@ -50,7 +50,7 @@ class SelectedPlayerCard extends StatelessWidget {
       height: 40,
       width: 40,
       decoration: BoxDecoration(
-        color: p == _selectedPlayers[index][which] ? Colors.green[200] : const Color(0xAA1737EB),
+        color: p == _selectedPlayers[index][which] ? Colors.green[800] : const Color(0xAA1737EB),
         borderRadius: BorderRadius.circular(50),
       ),
       child: Center(
@@ -74,7 +74,7 @@ class SelectedPlayerCard extends StatelessWidget {
       height: 40,
       width: 40,
       decoration: BoxDecoration(
-        color: p == _selectedPlayers[index][which] ? Colors.green[200] : const Color(0xAA1737EB),
+        color: p == _selectedPlayers[index][which] ? Colors.green[800] : const Color(0xAA1737EB),
         borderRadius: BorderRadius.circular(50),
       ),
       child: Center(

@@ -14,7 +14,7 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   late PackageInfo packageInfo;
-  late String appVersion;
+  String? appVersion;
   late String version;
   double _opacity = 0;
   final String _showAboutDialogTitle = "Uygulamanın versiyonu: ";
@@ -34,7 +34,7 @@ class _SplashPageState extends State<SplashPage> {
     if (appVersion == version) {
       Navigator.pushReplacementNamed(context, "home_page");
     } else {
-      showAboutDialog(context: context, applicationVersion: _showAboutDialogTitle + appVersion, children: [
+      showAboutDialog(context: context, applicationVersion: _showAboutDialogTitle + appVersion!, children: [
         const Text("Uygulmanın yeni bir versiyonu mevcut. Lütfen yeni versiyonu indirin."),
       ]);
     }
@@ -68,13 +68,23 @@ class _SplashPageState extends State<SplashPage> {
           AnimatedOpacity(
             opacity: _opacity,
             duration: const Duration(seconds: 2),
-            child: Text(
-              "FutQuiz",
-              style: TextStyle(
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-              ),
+            child: Column(
+              children: [
+                Text(
+                  "FutQuiz",
+                  style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                Text(
+                  "Version: $appVersion",
+                  style: const TextStyle(
+                    fontSize: 10,
+                  ),
+                ),
+              ],
             ),
             onEnd: () => checkAppVersion(),
           ),

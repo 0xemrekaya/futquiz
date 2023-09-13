@@ -19,11 +19,13 @@ class GameOnePage extends StatefulWidget {
 class _GameOnePageState extends State<GameOnePage> {
   PlayerMapViewModel player = PlayerMapViewModel();
   late int number;
+  final String appLogoUrl =
+      "https://firebasestorage.googleapis.com/v0/b/futquiz-261d5.appspot.com/o/logo%2FScreenshot_1.png?alt=media&token=4a12ec99-1e77-4d33-8ee8-13477c3f781d";
   final String _tite = "Aşağıda iki ipucu verildi. Bu ipuçlarına göre futbolcuyu tahmin et!";
   final _searchController = TextEditingController();
   final _scrollController = ScrollController();
   final _confettiController = ConfettiController();
-  List _selectedPlayers = [];
+  final List _selectedPlayers = [];
 
   @override
   void initState() {
@@ -39,12 +41,12 @@ class _GameOnePageState extends State<GameOnePage> {
 
   int getRandomNumber() {
     Random random = Random();
-    return random.nextInt(289) + 1;
+    return random.nextInt(274) + 1;
   }
 
   List _allResults = [];
   Future<void> searchPlayer() async {
-    var data = await FirebaseFirestore.instance.collection("new").orderBy("Name").get();
+    var data = await FirebaseFirestore.instance.collection("player").orderBy("Name").get();
     setState(() {
       _allResults = data.docs;
     });
@@ -171,13 +173,17 @@ class _GameOnePageState extends State<GameOnePage> {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [ageOfPlayer(), positionOfPlayer()],
+                      children: [
+                        infoAboutPlayer("Yaş", player.playerMapModel?.age.toString(), false),
+                        infoAboutPlayer("Lig", player.playerMapModel?.leagueLogo.toString(), true),
+                        infoAboutPlayer("Mevki", player.playerMapModel?.bestPosition.toString(), false),
+                      ],
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: height / 20, horizontal: width / 15),
                       child: SizedBox(
                         height: 50,
-                        width: 250,
+                        width: 300,
                         child: searchingPlayer(),
                       ),
                     ),
@@ -206,6 +212,30 @@ class _GameOnePageState extends State<GameOnePage> {
                 ),
                 ElevatedButton(
                     onPressed: () {
+                      final a = player.playerMapModel!;
+                      showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                              title: Container(
+                                  width: 200,
+                                  height: 250,
+                                  child: Column(
+                                    children: [
+                                      Image.network(a.photoUrl!),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(a.name!),
+                                      Text("Yaşı: ${a.age}"),
+                                      Text("Boyu: ${a.height}"),
+                                      Text("Pozisyonları: ${a.positions}"),
+                                      SizedBox(height: 50, child: Image.network(a.leagueLogo!)),
+                                    ],
+                                  ))));
+                    },
+                    child: const Text("Futbolcuyu gör")),
+                ElevatedButton(
+                    onPressed: () {
                       _skipPlayer();
                     },
                     child: const Text("Futbolcuyu değiştir")),
@@ -217,10 +247,10 @@ class _GameOnePageState extends State<GameOnePage> {
     );
   }
 
-  Column positionOfPlayer() {
+  Column infoAboutPlayer(String text, String? data, bool image) {
     return Column(
       children: [
-        const Text("Pozisyonu"),
+        Text(text),
         const SizedBox(
           height: 5,
         ),
@@ -228,33 +258,18 @@ class _GameOnePageState extends State<GameOnePage> {
           width: 50,
           height: 50,
           decoration: BoxDecoration(
-            color: const Color(0xAA1737EB),
+            color: image ? Colors.white : const Color(0xAA1737EB),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Center(child: Observer(builder: (_) {
-            return Text(player.playerMapModel?.bestPosition ?? "null");
-          })),
-        ),
-      ],
-    );
-  }
-
-  Column ageOfPlayer() {
-    return Column(
-      children: [
-        const Text("Yaşı"),
-        const SizedBox(
-          height: 5,
-        ),
-        Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            color: const Color(0xAA1737EB),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Center(child: Observer(builder: (_) {
-            return Text(player.playerMapModel?.age.toString() ?? "null");
+            return image
+                ? Image.network(
+                    data ?? appLogoUrl,
+                    height: 40,
+                    color: Colors.white,
+                    colorBlendMode: BlendMode.colorBurn,
+                  )
+                : Text(data ?? "null");
           })),
         ),
       ],

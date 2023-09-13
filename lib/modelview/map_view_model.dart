@@ -23,7 +23,7 @@ abstract class _PlayerMapViewModelBase with Store {
   @action
   Future<void> fetchPlayer(int id) async {
     _changeLoading();
-    final playersCollectionReference = FirebaseFirestore.instance.collection("new").doc(id.toString());
+    final playersCollectionReference = FirebaseFirestore.instance.collection("player").doc(id.toString());
     final response = playersCollectionReference.withConverter(
       fromFirestore: PlayerMapModel.fromFirestore,
       toFirestore: (player, _) => {},
