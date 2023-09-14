@@ -17,8 +17,6 @@ class SelectedPlayerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme;
     return Card(
-        color: const Color.fromARGB(63, 23, 55, 235),
-        shadowColor: Colors.black,
         child: ListTile(
             title: Text(
               "${_selectedPlayers[index]["Name"]}",
@@ -30,16 +28,16 @@ class SelectedPlayerCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  posAndAgeIsCorrect(index, textStyle, "Age"),
-                  posAndAgeIsCorrect(index, textStyle, "BestPosition"),
-                  natTeamIsCorrect(index, "Nationality"),
-                  natTeamIsCorrect(index, "ClubLogo")
+                  posAndAgeIsCorrect(context, index, textStyle, "Age"),
+                  posAndAgeIsCorrect(context, index, textStyle, "BestPosition"),
+                  natTeamIsCorrect(context, index, "Nationality"),
+                  natTeamIsCorrect(context, index, "ClubLogo")
                 ],
               ),
             )));
   }
 
-  Container posAndAgeIsCorrect(int index, TextTheme textStyle, String which) {
+  Container posAndAgeIsCorrect(BuildContext context, int index, TextTheme textStyle, String which) {
     String? p;
     if (which == "Age") {
       p = player.playerMapModel!.age.toString();
@@ -51,8 +49,8 @@ class SelectedPlayerCard extends StatelessWidget {
       width: 40,
       decoration: BoxDecoration(
         color: p == _selectedPlayers[index][which].toString()
-            ? const Color.fromARGB(196, 46, 125, 50)
-            : const Color(0xAA1737EB),
+            ? Colors.green[800]
+            : Theme.of(context).colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(50),
       ),
       child: Center(
@@ -64,7 +62,7 @@ class SelectedPlayerCard extends StatelessWidget {
     );
   }
 
-  Container natTeamIsCorrect(int index, String which) {
+  Container natTeamIsCorrect(BuildContext context, int index, String which) {
     String? p;
     if (which == "Nationality") {
       p = player.playerMapModel!.nationality;
@@ -76,7 +74,7 @@ class SelectedPlayerCard extends StatelessWidget {
       height: 40,
       width: 40,
       decoration: BoxDecoration(
-        color: p == _selectedPlayers[index][which] ? const Color.fromARGB(196, 46, 125, 50) : const Color(0xAA1737EB),
+        color: p == _selectedPlayers[index][which] ? Colors.green[800] : Theme.of(context).colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(50),
       ),
       child: Center(

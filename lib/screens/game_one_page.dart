@@ -91,7 +91,7 @@ class _GameOnePageState extends State<GameOnePage> {
                   child: AlertDialog(
                     title: const Text("Tebrikler, doğru bildiniz!"),
                     actions: [
-                      TextButton(
+                      FilledButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
@@ -153,7 +153,7 @@ class _GameOnePageState extends State<GameOnePage> {
     return Scaffold(
       appBar: _appBar(context, height, width),
       body: Scrollbar(
-        isAlwaysShown: true,
+        thumbVisibility: true,
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: height / 50,
@@ -219,7 +219,7 @@ class _GameOnePageState extends State<GameOnePage> {
                           context: context,
                           builder: (context) => AlertDialog(
                               title: Container(
-                                  width: width /1.2,
+                                  width: width / 1.2,
                                   height: height / 2,
                                   child: Column(
                                     children: [
@@ -260,7 +260,7 @@ class _GameOnePageState extends State<GameOnePage> {
           width: 50,
           height: 50,
           decoration: BoxDecoration(
-            color: image ? Colors.white : Theme.of(context).colorScheme.secondary,
+            color: image ? Colors.white : Theme.of(context).colorScheme.primaryContainer,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Center(child: Observer(builder: (_) {
@@ -310,20 +310,21 @@ class _GameOnePageState extends State<GameOnePage> {
           });
         },
         decoration: InputDecoration(
+          labelText: "Futbolcu ara",
           contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(style: BorderStyle.solid)),
         ),
+        suggestionBackgroundColor: Theme.of(context).colorScheme.secondaryContainer,
         suggestionBuilder: (data) {
           return Card(
             child: Container(
-              
                 width: 250,
                 margin: const EdgeInsets.all(1),
                 padding: const EdgeInsets.all(10),
-                decoration:
-                    BoxDecoration(color: Theme.of(context).colorScheme.primary, borderRadius: BorderRadius.circular(5)),
-                child: Text(data, style: textStyle.bodyMedium!.copyWith(color: Colors.white))),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.onSecondary, borderRadius: BorderRadius.circular(5)),
+                child: Text(data, style: textStyle.bodyMedium!)),
           );
         });
   }
@@ -341,25 +342,26 @@ class _GameOnePageState extends State<GameOnePage> {
             showDialog(
                 context: context,
                 builder: (context) => Padding(
-                      padding: EdgeInsets.symmetric(vertical: height / 8, horizontal: width / 20),
+                      padding: EdgeInsets.symmetric(vertical: height / 5, horizontal: width / 30),
                       child: Dialog(
-                        backgroundColor: const Color.fromARGB(170, 3, 49, 81),
+                        backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             const Text("Oyuncu pozisyon bilgilendirmesi"),
-                            Image.network(
-                              _posImgUrl,
-                              height: height / 2,
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Image.network(
+                                _posImgUrl,
+                              ),
                             ),
                           ],
                         ),
                       ),
                     ));
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.info_outline_rounded,
-            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       ],

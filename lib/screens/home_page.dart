@@ -45,16 +45,25 @@ class HomePage extends StatelessWidget {
                         // user signed
                         return Column(
                           children: [
-                            Text("Giriş yapıldı: ${FirebaseAuth.instance.currentUser!.displayName}"),
-                            const SizedBox(
-                              height: 25,
+                            Text(
+                              "Giriş yapıldı: ${FirebaseAuth.instance.currentUser!.displayName}",
+                              style: textStyle.bodyMedium,
                             ),
-                            gameOnePlayButton(context, height, width, true),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            gameOnePlayButton(context, height, width, true, textStyle),
+                            const SizedBox(
+                              height: 5,
+                            ),
                             ElevatedButton(
                                 onPressed: () {
                                   FirebaseAuth.instance.signOut();
                                 },
-                                child: Text("Çıkış yap")),
+                                child: Text(
+                                  "Çıkış yap",
+                                  style: textStyle.bodyMedium,
+                                )),
                           ],
                         );
                       } else {
@@ -68,14 +77,13 @@ class HomePage extends StatelessWidget {
                               height: 15,
                             ),
                             Padding(
-                              padding: EdgeInsets.all(height / 40),
+                              padding: EdgeInsets.symmetric(vertical: height / 40, horizontal: width / 10),
                               child: GoogleSignInButton(
-                                  size: height / 40,
-                                  label: "Google ile giriş yap",
+                                  label: "       Google ile giriş yap",
                                   loadingIndicator: const CircularProgressIndicator(),
                                   clientId: _googleId),
                             ),
-                            gameOnePlayButton(context, height, width, false)
+                            gameOnePlayButton(context, height, width, false, textStyle)
                           ],
                         );
                       }
@@ -88,8 +96,9 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  ElevatedButton gameOnePlayButton(BuildContext context, double height, double width, bool isLogged) {
-    return ElevatedButton(
+  FilledButton gameOnePlayButton(
+      BuildContext context, double height, double width, bool isLogged, TextTheme textTheme) {
+    return FilledButton(
         onPressed: isLogged
             ? () {
                 Navigator.pushNamed(context, "game_one_page");
@@ -97,14 +106,12 @@ class HomePage extends StatelessWidget {
             : null,
         style: ButtonStyle(
           padding: MaterialStateProperty.all<EdgeInsets>(
-            EdgeInsets.symmetric(vertical: height / 30, horizontal: width / 5),
+            EdgeInsets.symmetric(vertical: height / 40, horizontal: width / 5),
           ),
         ),
-        child: Text(
-          "Ben kimim? Oyna!",
-          style: isLogged
-              ? Theme.of(context).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.primary)
-              : Theme.of(context).textTheme.titleMedium!,
-        ));
+        child: Text("Ben kimim? Oyna!",
+            style: isLogged
+                ? textTheme.bodyLarge!.copyWith(color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.w500)
+                : const TextStyle()));
   }
 }

@@ -1,9 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:futquiz/screens/splash_page.dart';
-import 'package:futquiz/theme/default_dark_theme.dart';
+import 'package:futquiz/theme/themes.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'firebase_options.dart';
@@ -26,7 +27,8 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: DefaultDarkTheme(context).theme,
+        theme: Themes(context).themeDark,
+
         // theme: ThemeData.dark(useMaterial3: true).copyWith(
         //   colorScheme: const ColorScheme.dark().copyWith(
         //     primary: const Color.fromARGB(218, 154, 226, 177),
