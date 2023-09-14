@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'map_view_model.dart';
+part of 'player_map_view_model.dart';
 
 // **************************************************************************
 // StoreGenerator

@@ -1,22 +1,41 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+import '../theme/theme_provider.dart';
+
+class HomePage extends ConsumerWidget {
+  HomePage({super.key});
   static String id = "home_page";
   final String _googleId = "964796347193-e5fc68rb5ue8ffgr6a3f484i5kmsd2vj.apps.googleusercontent.com";
   final String title = "FutQuiz";
   final String description =
       "All logos and brands are property of their respective owners and are used for identification purposes only";
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final read = ref.read(themeNotifierProvider);
+    final watch = ref.watch(themeNotifierProvider);
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final textStyle = Theme.of(context).textTheme;
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        toolbarHeight: height / 10,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Switch(
+                thumbIcon: const MaterialStatePropertyAll(Icon(Icons.nightlight_round)),
+                value: watch.darkTheme,
+                onChanged: (newValue) {
+                  read.changeTheme();
+                }),
+          )
+        ],
+      ),
       body: SafeArea(
           child: Center(
         child: Padding(
@@ -111,7 +130,8 @@ class HomePage extends StatelessWidget {
         ),
         child: Text("Ben kimim? Oyna!",
             style: isLogged
-                ? textTheme.bodyLarge!.copyWith(color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.w500)
+                ? textTheme.bodyLarge!
+                    .copyWith(color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.w500)
                 : const TextStyle()));
   }
 }

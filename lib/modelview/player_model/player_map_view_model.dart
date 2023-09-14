@@ -2,8 +2,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobx/mobx.dart';
 
-import '../model/player_model.dart';
-part 'map_view_model.g.dart';
+import '../../model/player_model.dart';
+part 'player_map_view_model.g.dart';
 
 class PlayerMapViewModel = _PlayerMapViewModelBase with _$PlayerMapViewModel;
 

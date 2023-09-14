@@ -1,11 +1,10 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
+@immutable
 class Themes {
-  const Themes(this.context);
-
-  final BuildContext context;
-  ThemeData get themeDark => FlexThemeData.dark(
+  const Themes._();
+  static ThemeData get themeDark => FlexThemeData.dark(
         scheme: FlexScheme.blue,
         surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
         blendLevel: 13,
@@ -23,7 +22,7 @@ class Themes {
         useMaterial3: true,
         swapLegacyOnMaterial3: true,
       );
-  ThemeData get themeLight => FlexThemeData.light(
+  static ThemeData get themeLight => FlexThemeData.light(
         scheme: FlexScheme.blue,
         surfaceMode: FlexSurfaceMode.levelSurfacesLowScaffold,
         blendLevel: 7,
@@ -41,6 +40,5 @@ class Themes {
         visualDensity: FlexColorScheme.comfortablePlatformDensity,
         useMaterial3: true,
         swapLegacyOnMaterial3: true,
-        
       );
 }

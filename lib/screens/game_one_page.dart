@@ -5,7 +5,7 @@ import 'package:easy_autocomplete/easy_autocomplete.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
-import '../modelview/map_view_model.dart';
+import '../modelview/player_model/player_map_view_model.dart';
 import '../utility/selected_player_card.dart';
 
 class GameOnePage extends StatefulWidget {

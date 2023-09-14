@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../modelview/map_view_model.dart';
+import '../modelview/player_model/player_map_view_model.dart';
 
 class SelectedPlayerCard extends StatelessWidget {
   const SelectedPlayerCard({
