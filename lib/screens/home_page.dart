@@ -28,7 +28,7 @@ class HomePage extends StatelessWidget {
                   flex: 2,
                   child: Text(
                     title,
-                    style: textStyle.headlineLarge,
+                    style: textStyle.displayMedium,
                     textAlign: TextAlign.start,
                   ),
                 ),

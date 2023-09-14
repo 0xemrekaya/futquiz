@@ -25,6 +25,7 @@ dependencies:
   firebase_ui_oauth_google: ^1.2.11
   firebase_ui_auth: ^1.8.0
   firebase_auth: ^4.9.0
+  flex_color_scheme: ^7.3.1
 
 dev_dependencies:
   flutter_test:

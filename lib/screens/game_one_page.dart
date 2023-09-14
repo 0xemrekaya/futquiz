@@ -219,8 +219,8 @@ class _GameOnePageState extends State<GameOnePage> {
                           context: context,
                           builder: (context) => AlertDialog(
                               title: Container(
-                                  width: 200,
-                                  height: 250,
+                                  width: width /1.2,
+                                  height: height / 2,
                                   child: Column(
                                     children: [
                                       Image.network(a.photoUrl!),
