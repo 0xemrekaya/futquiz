@@ -21,11 +21,14 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         toolbarHeight: height / 10,
-        actions: [Switch(
-          
-          value: themeProvider.darkTheme!, onChanged: (newValue) {
-          themeProvider.changeTheme(newValue);
-        })],
+        actions: [
+          Switch(
+              thumbIcon: MaterialStateProperty.all(Icon(themeProvider.darkTheme! ? Icons.nightlight_round :Icons.wb_sunny_rounded)),
+              value: themeProvider.darkTheme!,
+              onChanged: (newValue) {
+                themeProvider.changeTheme(newValue);
+              })
+        ],
       ),
       body: SafeArea(
           child: Center(

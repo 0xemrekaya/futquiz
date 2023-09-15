@@ -30,11 +30,11 @@ class MainApp extends StatelessWidget {
       builder: (context, themeProvider, child) {
         return MaterialApp(
             debugShowCheckedModeBanner: false,
-            themeMode: themeProvider.darkTheme == true ? ThemeMode.dark : ThemeMode.light,
+            themeMode: themeProvider.darkTheme! ? ThemeMode.dark : ThemeMode.light,
             theme: Themes.themeLight,
             darkTheme: Themes.themeDark,
             routes: {
-              HomePage.id: (context) => HomePage(),
+              HomePage.id: (context) => const HomePage(),
               GameOnePage.id: (context) => const GameOnePage(),
               SplashPage.id: (context) => const SplashPage(),
             },
