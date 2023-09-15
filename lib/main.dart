@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:futquiz/screens/game_one_score_page.dart';
 import 'package:futquiz/screens/splash_page.dart';
 import 'package:futquiz/theme/themes.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -34,8 +35,9 @@ class MainApp extends StatelessWidget {
             theme: Themes.themeLight,
             darkTheme: Themes.themeDark,
             routes: {
-              HomePage.id: (context) =>  HomePage(),
+              HomePage.id: (context) => HomePage(),
               GameOnePage.id: (context) => const GameOnePage(),
+              GameOneScorePage.id: (context) => GameOneScorePage(),
               SplashPage.id: (context) => const SplashPage(),
             },
             home: const SplashPage());

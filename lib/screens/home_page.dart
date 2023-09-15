@@ -69,7 +69,11 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 TextButton.icon(
-                    label: const Text("Skor Tablosu"), onPressed: () {}, icon: const Icon(Icons.info_outline_rounded)),
+                    label: const Text("Skor Tablosu"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "game_one_score_page");
+                    },
+                    icon: const Icon(Icons.emoji_events_outlined)),
                 SizedBox(height: height / 10),
                 StreamBuilder<User?>(
                     stream: FirebaseAuth.instance.authStateChanges(),
