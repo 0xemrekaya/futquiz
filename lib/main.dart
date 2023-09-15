@@ -34,7 +34,7 @@ class MainApp extends StatelessWidget {
             theme: Themes.themeLight,
             darkTheme: Themes.themeDark,
             routes: {
-              HomePage.id: (context) => const HomePage(),
+              HomePage.id: (context) =>  HomePage(),
               GameOnePage.id: (context) => const GameOnePage(),
               SplashPage.id: (context) => const SplashPage(),
             },

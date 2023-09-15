@@ -4,8 +4,9 @@ import 'package:confetti/confetti.dart';
 import 'package:easy_autocomplete/easy_autocomplete.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:futquiz/modelview/user_modelview/user_modelview.dart';
 
-import '../modelview/player_model/player_map_view_model.dart';
+import '../modelview/player_modelview/player_map_view_model.dart';
 import '../utility/selected_player_card.dart';
 
 class GameOnePage extends StatefulWidget {
@@ -18,6 +19,7 @@ class GameOnePage extends StatefulWidget {
 
 class _GameOnePageState extends State<GameOnePage> {
   PlayerMapViewModel player = PlayerMapViewModel();
+  UserModelView user = UserModelView();
   late int number;
   final String _posImgUrl =
       "https://firebasestorage.googleapis.com/v0/b/futquiz-261d5.appspot.com/o/playing%2Fpositions.jpg?alt=media&token=876d5c8a-7188-433d-aa45-4fe0fe221da3";
@@ -104,6 +106,8 @@ class _GameOnePageState extends State<GameOnePage> {
             ));
     number = getRandomNumber();
     getPlayer(number);
+    user.userMapModel!.userScoreGameOne = user.userMapModel!.userScoreGameOne! + 10;
+    user.setUserData(user.userMapModel!);
     setState(() {
       _selectedPlayers.clear();
       searchPlayer();
@@ -112,7 +116,7 @@ class _GameOnePageState extends State<GameOnePage> {
   }
 
   Future<List<String>> _fetchSuggestions(String searchValue) async {
-    List<String> suggestions = _allResults.map((e) => "${e["Name"]} - ${e["Club"]}").toList();
+    List<String> suggestions = _allResults.map((e) => "${e["Name"]}, ${e["FullName"]}").toList();
     List<String> filteredSuggestions = suggestions.where((element) {
       return element.toLowerCase().contains(searchValue.toLowerCase());
     }).toList();
@@ -290,7 +294,7 @@ class _GameOnePageState extends State<GameOnePage> {
         //     : _allResults.map((e) => e["Name"].toString() + " - " + e["Club"].toString()).toList(),
         onSubmitted: (p0) {
           for (var element in _allResults) {
-            if ("${element["Name"]} - ${element["Club"]}" == p0) {
+            if ("${element["Name"]} - ${element["FullName"]}" == p0) {
               _selectedPlayers.add(element);
               _searchController.clear();
             }
@@ -324,7 +328,7 @@ class _GameOnePageState extends State<GameOnePage> {
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.onSecondary, borderRadius: BorderRadius.circular(5)),
-                child: Text(data, style: textStyle.bodyMedium!)),
+                child: Text(data, style: textStyle.bodyMedium)),
           );
         });
   }

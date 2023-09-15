@@ -1,16 +1,34 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter/material.dart';
+import 'package:futquiz/modelview/user_modelview/user_modelview.dart';
 import 'package:provider/provider.dart';
 import '../theme/theme_provider.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
   static String id = "home_page";
   final String _googleId = "964796347193-e5fc68rb5ue8ffgr6a3f484i5kmsd2vj.apps.googleusercontent.com";
   final String title = "FutQuiz";
   final String description =
       "All logos and brands are property of their respective owners and are used for identification purposes only";
+
+  final UserModelView _userModelView = UserModelView();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<void> _getUserData() async {
+    String userid = _userModelView.user!.uid;
+    final users = await _firestore.collection("users").get();
+    bool a = users.docs.any((element) => element.id == userid);
+    if (!a) {
+      await _userModelView.setUserforFirstTime();
+      await _userModelView.getUserData();
+    } else {
+      await _userModelView.getUserData();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -22,12 +40,16 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         toolbarHeight: height / 10,
         actions: [
-          Switch(
-              thumbIcon: MaterialStateProperty.all(Icon(themeProvider.darkTheme! ? Icons.nightlight_round :Icons.wb_sunny_rounded)),
-              value: themeProvider.darkTheme!,
-              onChanged: (newValue) {
-                themeProvider.changeTheme(newValue);
-              })
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Switch(
+                thumbIcon: MaterialStateProperty.all(
+                    Icon(themeProvider.darkTheme! ? Icons.nightlight_round : Icons.wb_sunny_rounded)),
+                value: themeProvider.darkTheme!,
+                onChanged: (newValue) {
+                  themeProvider.changeTheme(newValue);
+                }),
+          )
         ],
       ),
       body: SafeArea(
@@ -45,6 +67,9 @@ class HomePage extends StatelessWidget {
                     textAlign: TextAlign.start,
                   ),
                 ),
+                TextButton.icon(
+                    label: const Text("Skor Tablosu"), onPressed: () {}, icon: const Icon(Icons.info_outline_rounded)),
+                SizedBox(height: height / 10),
                 StreamBuilder<User?>(
                     stream: FirebaseAuth.instance.authStateChanges(),
                     builder: (context, snapshot) {
@@ -92,9 +117,14 @@ class HomePage extends StatelessWidget {
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: height / 40, horizontal: width / 10),
                               child: GoogleSignInButton(
-                                  label: "       Google ile giriş yap",
-                                  loadingIndicator: const CircularProgressIndicator(),
-                                  clientId: _googleId),
+                                label: "       Google ile giriş yap",
+                                loadingIndicator: const CircularProgressIndicator(),
+                                clientId: _googleId,
+                                onSignedIn: (credential) {
+                                  _userModelView.setUser(credential.user!);
+                                  _getUserData();
+                                },
+                              ),
                             ),
                             gameOnePlayButton(context, height, width, false, textStyle)
                           ],
