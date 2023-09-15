@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ThemeNotifier extends ChangeNotifier {
-  bool darkTheme = true;
-  Future<void> changeTheme() async {
-    darkTheme = !darkTheme;
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('darkTheme', darkTheme);
-    notifyListeners();
+class ThemeProvider extends ChangeNotifier {
+  ThemeProvider(bool isDarkTheme) {
+    _darkTheme == isDarkTheme ? true : false;
+    changeTheme(isDarkTheme);
   }
 
-  Future<void> loadTheme() async {
+  bool? _darkTheme;
+
+  bool? get darkTheme => _darkTheme;
+  Future<void> changeTheme(bool value) async {
+    _darkTheme = value;
     final prefs = await SharedPreferences.getInstance();
-    darkTheme = prefs.getBool('darkTheme') ?? true;
+    prefs.setBool('darkTheme', _darkTheme!);
     notifyListeners();
   }
 }
-
-final themeNotifierProvider = ChangeNotifierProvider<ThemeNotifier>((ref) {
-  return ThemeNotifier();
-});
