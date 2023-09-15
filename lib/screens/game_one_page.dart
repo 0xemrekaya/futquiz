@@ -36,6 +36,7 @@ class _GameOnePageState extends State<GameOnePage> {
     searchPlayer();
     number = getRandomNumber();
     getPlayer(number);
+    getUserData();
     super.initState();
   }
 
@@ -66,6 +67,11 @@ class _GameOnePageState extends State<GameOnePage> {
     ));
     number = getRandomNumber();
     getPlayer(number);
+    if (user.userMapModel!.userScoreGameOne! > 5) {
+      user.userMapModel!.userScoreGameOne = user.userMapModel!.userScoreGameOne! - 5;
+      user.setUserData(user.userMapModel!);
+    }
+
     setState(() {
       _selectedPlayers.clear();
       searchPlayer();
@@ -73,7 +79,28 @@ class _GameOnePageState extends State<GameOnePage> {
     });
   }
 
+  Future<void> getUserData() async {
+    await user.getUserData();
+  }
+
+  int calculatePoint() {
+    if (_selectedPlayers.length == 1) {
+      return 10;
+    } else if (_selectedPlayers.length == 2) {
+      return 8;
+    } else if (_selectedPlayers.length == 3) {
+      return 6;
+    } else if (_selectedPlayers.length == 4) {
+      return 4;
+    } else if (_selectedPlayers.length == 5) {
+      return 2;
+    } else {
+      return 0;
+    }
+  }
+
   void _correct(String id) {
+    int point = calculatePoint();
     showDialog(
         context: context,
         builder: (context) => Stack(
@@ -91,7 +118,7 @@ class _GameOnePageState extends State<GameOnePage> {
                 ),
                 Center(
                   child: AlertDialog(
-                    title: const Text("Tebrikler, doğru bildiniz!"),
+                    title: Text("Tebrikler, doğru bildiniz! \n $point puan kazandınız!"),
                     actions: [
                       FilledButton(
                         onPressed: () {
@@ -106,7 +133,7 @@ class _GameOnePageState extends State<GameOnePage> {
             ));
     number = getRandomNumber();
     getPlayer(number);
-    user.userMapModel!.userScoreGameOne = user.userMapModel!.userScoreGameOne! + 10;
+    user.userMapModel!.userScoreGameOne = user.userMapModel!.userScoreGameOne! + point;
     user.setUserData(user.userMapModel!);
     setState(() {
       _selectedPlayers.clear();
@@ -216,30 +243,12 @@ class _GameOnePageState extends State<GameOnePage> {
                     )
                   ],
                 ),
-                ElevatedButton(
-                    onPressed: () {
-                      final a = player.playerMapModel!;
-                      showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                              title: Container(
-                                  width: width / 1.2,
-                                  height: height / 2,
-                                  child: Column(
-                                    children: [
-                                      Image.network(a.photoUrl!),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Text(a.name!),
-                                      Text("Yaşı: ${a.age}"),
-                                      Text("Boyu: ${a.height}"),
-                                      Text("Pozisyonları: ${a.positions}"),
-                                      SizedBox(height: 50, child: Image.network(a.leagueLogo!)),
-                                    ],
-                                  ))));
-                    },
-                    child: const Text("Futbolcuyu gör")),
+                Observer(builder: (_) {
+                  return Text("Toplam puanınız: ${user.userMapModel?.userScoreGameOne ?? 0}");
+                }),
+                Observer(builder: (_) {
+                  return Text(player.playerMapModel?.name.toString() ?? "null");
+                }),
                 ElevatedButton(
                     onPressed: () {
                       _skipPlayer();
@@ -294,7 +303,7 @@ class _GameOnePageState extends State<GameOnePage> {
         //     : _allResults.map((e) => e["Name"].toString() + " - " + e["Club"].toString()).toList(),
         onSubmitted: (p0) {
           for (var element in _allResults) {
-            if ("${element["Name"]} - ${element["FullName"]}" == p0) {
+            if ("${element["Name"]}, ${element["FullName"]}" == p0) {
               _selectedPlayers.add(element);
               _searchController.clear();
             }
@@ -314,7 +323,7 @@ class _GameOnePageState extends State<GameOnePage> {
           });
         },
         decoration: InputDecoration(
-          labelText: "Futbolcu ara",
+          labelText: "Futbolcu ara, kalan hak: ${6 - _selectedPlayers.length}",
           contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10), borderSide: const BorderSide(style: BorderStyle.solid)),

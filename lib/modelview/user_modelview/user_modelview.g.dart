@@ -70,7 +70,7 @@ mixin _$UserModelView on _UserModelViewBase, Store {
       ActionController(name: '_UserModelViewBase', context: context);
 
   @override
-  void setUser(User user) {
+  void setUser(User? user) {
     final _$actionInfo = _$_UserModelViewBaseActionController.startAction(
         name: '_UserModelViewBase.setUser');
     try {

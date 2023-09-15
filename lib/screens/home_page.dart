@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_oauth_google/firebase_ui_oauth_google.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:futquiz/modelview/user_modelview/user_modelview.dart';
 import 'package:provider/provider.dart';
 import '../theme/theme_provider.dart';
@@ -116,15 +117,17 @@ class HomePage extends StatelessWidget {
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(vertical: height / 40, horizontal: width / 10),
-                              child: GoogleSignInButton(
-                                label: "       Google ile giriş yap",
-                                loadingIndicator: const CircularProgressIndicator(),
-                                clientId: _googleId,
-                                onSignedIn: (credential) {
-                                  _userModelView.setUser(credential.user!);
-                                  _getUserData();
-                                },
-                              ),
+                              child: Observer(builder: (_) {
+                                return GoogleSignInButton(
+                                  label: "       Google ile giriş yap",
+                                  loadingIndicator: const CircularProgressIndicator(),
+                                  clientId: _googleId,
+                                  onSignedIn: (credential) {
+                                    _userModelView.setUser(credential.user!);
+                                    _getUserData();
+                                  },
+                                );
+                              }),
                             ),
                             gameOnePlayButton(context, height, width, false, textStyle)
                           ],

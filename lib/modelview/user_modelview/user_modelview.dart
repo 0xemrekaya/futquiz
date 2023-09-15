@@ -10,13 +10,13 @@ abstract class _UserModelViewBase with Store {
   final _firestore = FirebaseFirestore.instance;
 
   @observable
-  User? user;
+  User? user = FirebaseAuth.instance.currentUser;
 
   @observable
   UserMapModel? userMapModel;
 
   @action
-  void setUser(User user) {
+  void setUser(User? user) {
     this.user = user;
   }
 
