@@ -23,8 +23,6 @@ class _GameOnePageState extends State<GameOnePage> {
   late int number;
   final String _posImgUrl =
       "https://firebasestorage.googleapis.com/v0/b/futquiz-261d5.appspot.com/o/playing%2Fpositions.jpg?alt=media&token=876d5c8a-7188-433d-aa45-4fe0fe221da3";
-  final String appLogoUrl =
-      "https://firebasestorage.googleapis.com/v0/b/futquiz-261d5.appspot.com/o/logo%2FScreenshot_1.png?alt=media&token=4a12ec99-1e77-4d33-8ee8-13477c3f781d";
   final String _tite = "Aşağıda iki ipucu verildi. Bu ipuçlarına göre futbolcuyu tahmin et!";
   final _searchController = TextEditingController();
   final _scrollController = ScrollController();
@@ -76,6 +74,65 @@ class _GameOnePageState extends State<GameOnePage> {
       _selectedPlayers.clear();
       searchPlayer();
       _scrollController.jumpTo(0);
+    });
+  }
+
+  void _showPlayer(double height, double width, TextTheme textStyle) {
+    showDialog(
+        context: context,
+        builder: (context) => Padding(
+              padding: EdgeInsets.symmetric(vertical: height / 5, horizontal: width / 30),
+              child: Dialog(
+                backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+                child: Observer(builder: (_) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text("Bilemediğiniz futbolcu", style: textStyle.headlineSmall),
+                      Container(
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: Colors.white,
+                        ),
+                        child: Image.network(
+                          player.playerMapModel?.photoUrl.toString() ?? "null",
+                          height: 200,
+                        ),
+                      ),
+                      Text(player.playerMapModel?.name.toString() ?? "null"),
+                      Text(player.playerMapModel?.fullName.toString() ?? "null"),
+                      Text(player.playerMapModel?.age.toString() ?? "null"),
+                      Text(
+                        "${player.playerMapModel!.positions},${player.playerMapModel!.bestPosition}",
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          infoAboutPlayer("Kulüp", player.playerMapModel?.clubLogo.toString(), true),
+                          infoAboutPlayer("Lig", player.playerMapModel?.leagueLogo.toString(), true),
+                          infoAboutPlayer("Bayrak", player.playerMapModel?.nationality.toString(), true),
+                          // Image.network(height: 25, player.playerMapModel?.clubLogo.toString() ?? "null"),
+                          // Image.network(
+                          //     height: 30,
+                          //     color: Theme.of(context).colorScheme.secondaryContainer,
+                          //     colorBlendMode: BlendMode.colorBurn,
+                          //     player.playerMapModel?.leagueLogo.toString() ?? "null"),
+                          // Image.network(height: 25, player.playerMapModel?.nationality.toString() ?? "null")
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                    ],
+                  );
+                }),
+              ),
+            )).then((value) {
+      _skipPlayer();
     });
   }
 
@@ -246,9 +303,6 @@ class _GameOnePageState extends State<GameOnePage> {
                 Observer(builder: (_) {
                   return Text("Toplam puanınız: ${user.userMapModel?.userScoreGameOne ?? 0}");
                 }),
-                Observer(builder: (_) {
-                  return Text(player.playerMapModel?.name.toString() ?? "null");
-                }),
                 ElevatedButton(
                     onPressed: () {
                       _skipPlayer();
@@ -278,12 +332,14 @@ class _GameOnePageState extends State<GameOnePage> {
           ),
           child: Center(child: Observer(builder: (_) {
             return image
-                ? Image.network(
-                    data ?? appLogoUrl,
-                    height: 40,
-                    color: Colors.white,
-                    colorBlendMode: BlendMode.colorBurn,
-                  )
+                ? data == null
+                    ? const Icon(Icons.image_not_supported, size: 40)
+                    : Image.network(
+                        data,
+                        height: 40,
+                        color: Colors.white,
+                        colorBlendMode: BlendMode.colorBurn,
+                      )
                 : Text(data ?? "null");
           })),
         ),
@@ -312,6 +368,9 @@ class _GameOnePageState extends State<GameOnePage> {
           if (_selectedPlayers.map((e) => "${e["ID"]}").contains(id)) {
             _correct(id);
             _confettiController.play();
+          }
+          if (_selectedPlayers.length == 6) {
+            _showPlayer(MediaQuery.of(context).size.height, MediaQuery.of(context).size.width, textStyle);
           }
           _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,
