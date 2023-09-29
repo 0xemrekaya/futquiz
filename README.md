@@ -9,7 +9,7 @@ FutQuiz is a football (soccer) quiz application. It contains 280 football player
 *  Football player guessing game
 
 ## Video From the App
-https://github.com/emrekaya035/futquiz/assets/72754835/0b03bc9a-a12d-48d8-b894-cb6d68133afa
+[Youtube](https://youtu.be/VbYOkC4vAvY)
 
 ## Installation
 1.  Clone the repository
